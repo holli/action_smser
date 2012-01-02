@@ -1,7 +1,10 @@
 module ActionSmser
   class DeliveryReportsController < ApplicationController
 
-    def 
+    def gateway_commit
+      debugger
+      puts "JOO"
+    end
 
 
     # GET /delivery_reports
