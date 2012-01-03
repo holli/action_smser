@@ -11,9 +11,17 @@ module ActionSmser::DeliveryMethods
     end
 
     def self.deliver(sms)
+      ActionSmser::Logger.info "ActionSmser::DeliveryMethods::TestArray.deliveries added message, no real delivery."
       self.deliveries << sms
 
-      ActionSmser::Logger.info "ActionSmser::DeliveryMethods::TestArray.deliveries added message, no real delivery."
+      if sms.delivery_options[:save_delivery_reports]
+        puts("FIXME: HERE SHOULD BE DELIVERY_INFO SAVE")
+        puts "TEE SE VAIKKA LAITTAMALLA DELIVERYREPORT OTTAMAAN INITIALIZESSA SMS RESPONSEA"
+
+      else
+        return sms.to.to_a.size
+      end
+
     end
 
   end

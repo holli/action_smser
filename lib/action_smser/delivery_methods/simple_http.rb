@@ -38,7 +38,20 @@ module ActionSmser::DeliveryMethods
       
       logger.info "SimpleHttp delivery ||| #{deliver_path} ||| #{response.inspect}"
       logger.info response.body if !response.blank?
-      response
+      sms.delivery_info = response
+
+      results = response.body.split("\n")
+      if results.first.to_i < 0
+        return false
+      else
+        if options[:save_delivery_report]
+          puts "FIXME: HERE SHOULD BE DELIVERY_INFO SAVE"
+          puts "TEE SE VAIKKA LAITTAMALLA DELIVERYREPORT OTTAMAAN INITIALIZESSA SMS RESPONSEA"
+        else
+          return results.size
+        end
+      end
+
     end
 
     def self.deliver_path(sms, options)

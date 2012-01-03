@@ -3,6 +3,7 @@ require 'iconv'
 
 class ActionSmser::Base
 
+  # This is the main class that your sms mailers will inherit.
   class << self
     def method_missing(method, *args) #:nodoc:
       return super unless respond_to?(method)
@@ -25,8 +26,15 @@ class ActionSmser::Base
 
   attr_accessor :body, :to, :from
 
+  # Initialized to duplicate of ActionSmser.delivery_options
+  attr_accessor :delivery_options
+
+  # Delivery methods can use this to save data for debugging, e.g. http responses etc
+  attr_accessor :delivery_info
+
   # Called from class.method_missing with own_sms_message when you call OwnMailer.own_sms_message
   def initialize(method_name, *args)
+    @delivery_options = ActionSmser.delivery_options.dup
     @valid = true
     @sms_action = method_name
     send method_name, *args
@@ -52,11 +60,6 @@ class ActionSmser::Base
     @valid && !body.blank? && !@to.blank? && !@from.blank?
   end
 
-  def delivery_options
-    if @delivery_options.blank?
-      ActionSmser.delivery_options
-    end
-  end
   def delivery_method
     ActionSmser::DeliveryMethods.const_get(delivery_options[:delivery_method].to_s.downcase.camelize)
   end

@@ -8,7 +8,7 @@ end
 module ActionSmser
 
   mattr_accessor :delivery_options
-  self.delivery_options= {:delivery_method => :test_array}
+  self.delivery_options= {:delivery_method => :test_array, :save_delivery_reports => false}
 
   class Logger
     def self.info(str)

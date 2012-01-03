@@ -35,6 +35,11 @@ describe ActionSmser::Base do
     assert @sms.valid?, @sms
   end
 
+  it "should have copied the delivery_options when initializing" do
+    assert @sms.delivery_options == ActionSmser.delivery_options
+    assert @sms.delivery_options.object_id != ActionSmser.delivery_options.object_id
+  end
+
   describe "delivery" do
 
     it "should have test_array as delivery method" do
@@ -50,9 +55,24 @@ describe ActionSmser::Base do
       it "should be able to deliver" do
         assert @sms_delivery
       end
+
       it "should add to TestArray" do
         assert_equal 1, ActionSmser::DeliveryMethods::TestArray.deliveries.size
         assert_equal @sms, ActionSmser::DeliveryMethods::TestArray.deliveries.first
+      end
+
+    end
+
+    describe "test_array delivery with saving delivery_reports" do
+      before do
+        ActionSmser::DeliveryMethods::TestArray.deliveries.clear
+        @sms.delivery_options[:save_delivery_reports] = true
+        @delivery_reports_count = ActionSmser::DeliveryReport.count
+        @sms_delivery = @sms.deliver
+      end
+
+      it "should have created two delivery_reports" do
+        assert_equal @delivery_reports_count + 1, ActionSmser::DeliveryReport.count
       end
     end
   end
