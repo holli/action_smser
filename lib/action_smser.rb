@@ -1,11 +1,14 @@
 require "action_smser/engine"
 require "action_smser/base"
 
+Dir[File.dirname(__FILE__) + '/action_smser/delivery_methods/*.rb'].each do |file|
+  require file
+end
+
 module ActionSmser
-  @gateway = {}
-  def self.gateway
-    @gateway
-  end
+
+  mattr_accessor :delivery_options
+  self.delivery_options= {:delivery_method => :test_array}
 
   class Logger
     def self.info(str)
@@ -17,3 +20,5 @@ module ActionSmser
   end
 
 end
+
+

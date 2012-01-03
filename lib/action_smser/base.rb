@@ -8,18 +8,6 @@ require 'iconv'
 class ActionSmser::Base
 
   class << self
-
-    # In test environment this includes delivered sms messages for verifying how your software works
-    # Normal array, see messages by 'ActionSmser.deliveries' and clear by 'ActionSmser.deliveries.clear'
-    @@deliveries = []
-    def deliveries
-      @@deliveries
-    end
-    def deliveries_add(sms)
-      self.deliveries << sms
-    end
-
-
     def method_missing(method, *args) #:nodoc:
       return super unless respond_to?(method)
       new(method, *args)
@@ -39,6 +27,8 @@ class ActionSmser::Base
   ##################################################################
   ## INSTANCE METHODS
 
+  attr_accessor :body, :to, :from
+
   # Called from class.method_missing with own_sms_message when you call OwnMailer.own_sms_message
   def initialize(method_name, *args)
     @valid = true
@@ -54,7 +44,7 @@ class ActionSmser::Base
   end
 
   def to_s
-    "Sms #{self.class}.#{@sms_action} - From: #{@from}, To: #{@to}, Body: #{@body}, Valid: #{@valid}"
+    "Sms #{self.class}.#{@sms_action} - From: #{from.inspect}, To: #{to.inspect}, Body: #{body.inspect}, Valid: #{@valid}"
   end
 
   # If you want mark the message as invalid
@@ -66,43 +56,26 @@ class ActionSmser::Base
     @valid && !body.blank? && !@to.blank? && !@from.blank?
   end
 
-  
+  def delivery_options
+    if @delivery_options.blank?
+      ActionSmser.delivery_options
+    end
+  end
+  def delivery_method
+    ActionSmser::DeliveryMethods.const_get(delivery_options[:delivery_method].to_s.downcase.camelize)
+  end
+
+
   def deliver
     return false unless valid?
 
-    self.class.deliveries_add(self)
     logger.info "Sending sms (#{self.to_s})"
 
-    @response = deliver_https
+    delivery_method.deliver(self)
 
     #SmsSentInfo.create_from_http_response(@response, self.sender, recipients_receive_sms, sms_type, self.message)
   end
 
-  def deliver_https
-    # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
-    # http://notetoself.vrensk.com/2008/09/verified-https-in-ruby/
-
-    response = nil
-    if self.class.deliver_messages?
-
-      https = Net::HTTP.new(ActionSmser.gateway[:server], 443)
-      https.use_ssl = true
-      https.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      https.start do |http|
-        response = http.request(Net::HTTP::Get.new(deliver_path)) if !Rails.env.test? #Never request by accident in test environment.
-      end
-    end
-    logger.info "SMS: get ||| #{deliver_path} ||| #{response.inspect}" # ||| #{response.body if !response.blank?}"
-    logger.info response.body if !response.blank?
-    response
-  end
-
-  def deliver_path
-    "/api/sendsms/plain?user=#{ActionSmser.gateway[:username]}&password=#{ActionSmser.gateway[:password]}&sender=#{from_encoded}&SMSText=#{body_encoded_escaped}&GSM=#{to_encoded}"
-  end
-
-
-  attr_reader :body
   # http://en.wikipedia.org/wiki/GSM_03.38 , some chars takes 2 spaces
   def body_length
     i = 0
