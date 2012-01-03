@@ -1,7 +1,3 @@
-
-# FIXME: PUT THESE IN GEM FILE
-require 'net/http'
-require 'net/https'
 require 'cgi'
 require 'iconv'
 

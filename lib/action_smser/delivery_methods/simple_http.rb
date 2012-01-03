@@ -1,3 +1,6 @@
+require 'net/http'
+require 'net/https'
+
 module ActionSmser::DeliveryMethods
 
   # Very simple implementation of http request to gateway. Options used are
