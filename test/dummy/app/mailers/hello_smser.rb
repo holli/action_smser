@@ -1,9 +1,9 @@
 class HelloSmser < ActionSmser::Base
-  def hello_world()
-    sms(:to => "123", :from => '999', :body => 'hello world')
+  def hello(to, from, body)
+    sms(:to => to, :from => from, :body => body)
   end
 
-  def hello_user(receiver, user_name)
-    sms(:to => receiver, :from => '999', :body => "hello #{user_name}")
+  def hello_world()
+    sms(:to => "123", :from => '123', :body => 'hello world')
   end
 end
