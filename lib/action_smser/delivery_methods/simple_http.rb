@@ -40,6 +40,8 @@ module ActionSmser::DeliveryMethods
       # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
       # http://notetoself.vrensk.com/2008/09/verified-https-in-ruby/
 
+      response = nil
+      
       server_port = options[:use_ssl] ? 443 : 80
       http = Net::HTTP.new(options[:server], server_port)
       if options[:use_ssl]
