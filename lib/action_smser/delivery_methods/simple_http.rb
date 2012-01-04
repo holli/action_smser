@@ -10,16 +10,35 @@ module ActionSmser::DeliveryMethods
     
     def self.deliver(sms)
       logger.info "Delivering sms by https"
-      self.deliver_http(sms, sms.delivery_options[:simple_http])
+
+      options = sms.delivery_options[:simple_http]
+      deliver_path = self.deliver_path(sms, options)
+      response = self.deliver_http_request(sms, options)
+
+      logger.info "SimpleHttp delivery ||| #{deliver_path} ||| #{response.inspect}"
+      logger.info response.body if !response.blank?
+      sms.delivery_info = response
+
+      results = response.body.split("\n")
+      if results.first.to_i < 0
+        return false
+      else
+        if sms.delivery_options[:save_delivery_reports]
+          delivery_reports = []
+          sms.to_numbers_array.each_with_index do |to, i|
+            delivery_reports << ActionSmser::DeliveryReport.create_from_sms(sms, to, results[i])
+          end
+          return delivery_reports
+        else
+          return results
+        end
+      end
+
     end
 
-    def self.deliver_http(sms, options)
+    def self.deliver_http_request(sms, options)
       # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
       # http://notetoself.vrensk.com/2008/09/verified-https-in-ruby/
-
-      deliver_path = self.deliver_path(sms, options)
-
-      response = nil
 
       server_port = options[:use_ssl] ? 443 : 80
       http = Net::HTTP.new(options[:server], server_port)
@@ -35,23 +54,8 @@ module ActionSmser::DeliveryMethods
       else
         logger.warn "SimpleHttp does never make real http requests in test environment!"
       end
-      
-      logger.info "SimpleHttp delivery ||| #{deliver_path} ||| #{response.inspect}"
-      logger.info response.body if !response.blank?
-      sms.delivery_info = response
 
-      results = response.body.split("\n")
-      if results.first.to_i < 0
-        return false
-      else
-        if options[:save_delivery_report]
-          puts "FIXME: HERE SHOULD BE DELIVERY_INFO SAVE"
-          puts "TEE SE VAIKKA LAITTAMALLA DELIVERYREPORT OTTAMAAN INITIALIZESSA SMS RESPONSEA"
-        else
-          return results.size
-        end
-      end
-
+      response
     end
 
     def self.deliver_path(sms, options)

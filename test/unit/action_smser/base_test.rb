@@ -39,32 +39,4 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
     assert_equal ActionSmser::DeliveryMethods::TestArray, @sms.delivery_method
   end
 
-  ##############################################################
-  ## DELIVERY WITH TEST_ARRAY
-
-  def setup_delivery_with_test_array
-    ActionSmser::DeliveryMethods::TestArray.deliveries.clear
-    @sms_delivery = @sms.deliver
-  end
-
-  test "test_array should be able to deliver" do
-    setup_delivery_with_test_array
-    assert @sms_delivery
-  end
-
-  test "test_array should add to TestArray" do
-    setup_delivery_with_test_array
-    assert_equal 1, ActionSmser::DeliveryMethods::TestArray.deliveries.size
-    assert_equal @sms, ActionSmser::DeliveryMethods::TestArray.deliveries.first
-  end
-
-  test "test_array delivery with saving delivery_reports" do
-    ActionSmser::DeliveryMethods::TestArray.deliveries.clear
-    @sms.delivery_options[:save_delivery_reports] = true
-    @delivery_reports_count = ActionSmser::DeliveryReport.count
-    @sms_delivery = @sms.deliver
-
-    assert_equal @delivery_reports_count + 2, ActionSmser::DeliveryReport.count
-  end
-
 end

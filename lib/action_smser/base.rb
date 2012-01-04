@@ -101,13 +101,17 @@ class ActionSmser::Base
     CGI.escape(Iconv.iconv('ISO-8859-15//TRANSLIT//IGNORE', 'utf-8', message).to_s)
   end
 
-  def to_encoded
+  def to_numbers_array
     if @to.is_a?(Array)
       # harsh check that receivers are a list of numbers
-      @to.collect{|number| number.to_i if number.to_i>1000}.compact.join(",")
+      @to.collect{|number| number.to_i if number.to_i>1000}.compact
     else
-      @to.to_s
+      [@to.to_s]
     end
+  end
+
+  def to_encoded
+    to_numbers_array.join(",")
   end
 
   def from_encoded

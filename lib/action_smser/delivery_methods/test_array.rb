@@ -15,11 +15,13 @@ module ActionSmser::DeliveryMethods
       self.deliveries << sms
 
       if sms.delivery_options[:save_delivery_reports]
-        puts("FIXME: HERE SHOULD BE DELIVERY_INFO SAVE")
-        puts "TEE SE VAIKKA LAITTAMALLA DELIVERYREPORT OTTAMAAN INITIALIZESSA SMS RESPONSEA"
-
+        delivery_reports = []
+        sms.to_numbers_array.each do |to|
+          delivery_reports << ActionSmser::DeliveryReport.create_from_sms(sms, to, "test_array_id_#{rand(99999999)}")
+        end
+        delivery_reports
       else
-        return sms.to.to_a.size
+        return sms.to_numbers_array
       end
 
     end
