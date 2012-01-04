@@ -13,5 +13,7 @@ class CreateActionSmserDeliveryReports < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index "action_smser_delivery_reports", :msg_id
   end
 end
