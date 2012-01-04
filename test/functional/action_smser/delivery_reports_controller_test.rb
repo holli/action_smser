@@ -29,4 +29,15 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
     get 'index', :use_route => :action_smser
     assert_response 403
   end
+
+  test "index" do
+    2.times do
+      ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
+    end
+    ActionSmser::DeliveryReportsController.any_instance.stubs(:admin_access_only).returns(true)
+    get 'index', :use_route => :action_smser
+    assert_response :success
+
+  end
+
 end

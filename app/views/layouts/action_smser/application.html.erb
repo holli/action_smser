@@ -2,13 +2,26 @@
 <html>
 <head>
   <title>ActionSmser</title>
-  <%= stylesheet_link_tag    "action_smser/application" %>
-  <%= javascript_include_tag "action_smser/application" %>
-  <%= csrf_meta_tags %>
+  <%#= stylesheet_link_tag    "action_smser/application" %>
+  <%#= javascript_include_tag "action_smser/application" %>
+  <%#= csrf_meta_tags %>
 </head>
 <body>
 
+<h1>ActionSmser infos</h1>
+
+Back to <%= link_to 'Main application', '/' %>
+
+<hr>
+
 <%= yield %>
+
+
+<hr>
+<p>
+  Stats by ActionSms gem, see homepage: <%= link_to 'https://github.com/holli/action_smser', 'https://github.com/holli/action_smser' %>
+</p>
+
 
 </body>
 </html>

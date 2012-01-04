@@ -1,4 +1,9 @@
-<h1>Listing delivery_reports</h1>
+
+<h1>Delivery status for the last month</h1>
+
+<hr>
+
+<h1>20 most recent delivery_reports</h1>
 
 <table>
   <tr>
@@ -13,21 +18,16 @@
     <th></th>
   </tr>
 
-<% @delivery_reports.each do |delivery_report| %>
+<% ActionSmser::DeliveryReport.first(20).each do |delivery_report| %>
   <tr>
     <td><%= delivery_report.msg_id %></td>
     <td><%= delivery_report.status %></td>
     <td><%= delivery_report.status_updated_at %></td>
-    <td><%= delivery_report.recipient %></td>
-    <td><%= delivery_report.sender %></td>
-    <td><%= delivery_report.text_body %></td>
-    <td><%= link_to 'Show', delivery_report %></td>
-    <td><%= link_to 'Edit', edit_delivery_report_path(delivery_report) %></td>
-    <td><%= link_to 'Destroy', delivery_report, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= delivery_report.to %></td>
+    <td><%= delivery_report.from %></td>
+    <td><%= delivery_report.body %></td>
   </tr>
 <% end %>
 </table>
 
-<br />
 
-<%= link_to 'New Delivery report', new_delivery_report_path %>
