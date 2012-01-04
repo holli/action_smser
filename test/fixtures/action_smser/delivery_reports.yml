@@ -4,14 +4,7 @@ one:
   msg_id: MyString
   status: MyString
   status_updated_at: 2012-01-02 23:52:15
-  recipient: MyString
-  sender: MyString
-  text_body: MyString
+  to: MyString
+  from: MyString
+  body: MyString
 
-two:
-  msg_id: MyString
-  status: MyString
-  status_updated_at: 2012-01-02 23:52:15
-  recipient: MyString
-  sender: MyString
-  text_body: MyString

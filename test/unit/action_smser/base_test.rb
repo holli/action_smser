@@ -2,7 +2,14 @@ require 'test_helper'
 
 require 'minitest/autorun'
 
-#class ActionSmser::BaseTest < ActiveSupport::TestCase
+class ActionSmser::BaseTest < ActiveSupport::TestCase
+  fixtures :all
+  test "test" do
+    puts "JOO #{ActionSmser::DeliveryReport.count}"
+    puts "#{delivery_reports(:one).inspect}"
+    assert true
+  end
+end
 
 class MockSms<ActionSmser::Base
   def basic_sms(to, from, body)
@@ -33,6 +40,10 @@ describe ActionSmser::Base do
 
   it "should be valid sms" do
     assert @sms.valid?, @sms
+  end
+
+  it "should have saved sms_type" do
+    assert_equal "MockSms.basic_sms", @sms.sms_type
   end
 
   it "should have copied the delivery_options when initializing" do

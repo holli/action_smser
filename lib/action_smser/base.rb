@@ -32,6 +32,11 @@ class ActionSmser::Base
   # Delivery methods can use this to save data for debugging, e.g. http responses etc
   attr_accessor :delivery_info
 
+  # sms_type is string "ClassName.ActionName", initialized in beginning
+  def sms_type
+    "#{self.class}.#{@sms_action}"
+  end
+
   # Called from class.method_missing with own_sms_message when you call OwnMailer.own_sms_message
   def initialize(method_name, *args)
     @delivery_options = ActionSmser.delivery_options.dup
@@ -48,7 +53,7 @@ class ActionSmser::Base
   end
 
   def to_s
-    "Sms #{self.class}.#{@sms_action} - From: #{from.inspect}, To: #{to.inspect}, Body: #{body.inspect}, Valid: #{@valid}"
+    "Sms #{sms_type} - From: #{from.inspect}, To: #{to.inspect}, Body: #{body.inspect}, Valid: #{@valid}"
   end
 
   # If you want mark the message as invalid
