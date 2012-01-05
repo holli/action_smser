@@ -93,7 +93,6 @@ ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => test_gateway}
 ```
 
 
-
 # Requirements
 
 Gem has been tested with ruby 1.8.7, 1.9.2 and Rails 3.1.
@@ -105,7 +104,6 @@ http://travis-ci.org/#!/holli/action_smser
 # Support
 
 Submit suggestions or feature requests as a GitHub Issue or Pull Request. Remember to update tests. Tests are quite extensive.
-
 
 
 ### Similar gems
