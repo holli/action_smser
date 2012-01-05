@@ -1,5 +1,27 @@
 
-<h1>Delivery status for the last month</h1>
+<h1>Delivery status for the past month</h1>
+
+<h2>Status</h2>
+<ul>
+<%
+   quest = ActionSmser::DeliveryReport.where(:created_at => 1.month.ago..1.minute.ago)
+   total = quest.count
+   grouped_by_status = quest.group(:status).count.each do |key, val| %>
+
+    <li><%= key %> : <%= val %> (<%= 100 * val.to_f / total.to_f %>%)</li>
+<% end %>
+</ul>
+
+<h2>Msg type</h2>
+<ul>
+<%
+   quest = ActionSmser::DeliveryReport.where(:created_at => 1.month.ago..0.minute.ago)
+   total = quest.count
+   grouped_by_status = quest.group(:sms_type).count.each do |key, val| %>
+
+    <li><%= key %> : <%= val %> (<%= 100 * val.to_f / total.to_f %>%)</li>
+<% end %>
+</ul>
 
 <hr>
 
@@ -13,9 +35,6 @@
     <th>Recipient</th>
     <th>Sender</th>
     <th>Text body</th>
-    <th></th>
-    <th></th>
-    <th></th>
   </tr>
 
 <% ActionSmser::DeliveryReport.first(20).each do |delivery_report| %>

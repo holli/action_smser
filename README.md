@@ -16,7 +16,7 @@ bundle exec rake railties:install:migrations FROM=ActionSmser
 rake db:migrate
 ```
 
-## Setup
+## SMS sending
 
 **Default**
 
@@ -31,7 +31,7 @@ if Rails.env.development? || Rails.env.production?
       :use_ssl => true
   }
 
-  ActionSmser.delivery_options[:save_delivery_reports] = true
+  # ActionSmser.delivery_options[:save_delivery_reports] = true
 end
 
 ```
@@ -53,6 +53,46 @@ Using
 sms=TestSms.hello_user('358407573855', '358407573855', "Olli")
 sms.deliver
 ```
+
+## Delivery reports
+
+Gem handles collecting and analysing of delivery reports. This enables you to make sure that your gateway works.
+
+```
+in /config/initializers/active_smser.rb
+
+ActionSmser.delivery_options[:save_delivery_reports] = true
+
+# This is simple proc that is used in a before filter, if it returns true it allows access to
+# http://localhost.inv:3000/action_smser/delivery_reports/ with infos about delivery reports
+ActionSmser.delivery_options[:admin_access] =
+    lambda {|controller|
+      if controller.session[:admin_logged].blank?
+        return controller.session[:admin_logged]
+      else
+        return true
+      end
+    }
+
+# This gives ActionSmser way to parse infos from pushed to gateway
+# Params is all params gotten in the request
+test_gateway = lambda {|params|
+  if params["DeliveryReport"] && params["DeliveryReport"]["message"]
+    info = params["DeliveryReport"]["message"]
+    return info["id"], info["status"]
+  else
+    return nil, nil
+  end
+}
+
+# Parser is used with urls like
+# /action_smser/delivery_reports/gateway_commit/test_gateway
+# where 'test_gateway' is the part that is used for locating right parser.
+ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => test_gateway}
+
+```
+
+
 
 # Requirements
 
