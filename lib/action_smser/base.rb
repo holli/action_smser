@@ -11,12 +11,8 @@ class ActionSmser::Base
     end
 
     def respond_to?(method, include_private = false) #:nodoc:
-      super || public_instance_methods(true).include?(method.to_s)
-    end
-
-    # Only send messages in production
-    def deliver_messages?
-      Rails.env.production? || Rails.env.development?
+      #super || public_instance_methods(true).include?(method.to_s)
+      super || method_defined?(method.to_sym)
     end
 
   end
@@ -98,7 +94,7 @@ class ActionSmser::Base
   # Most of the gateways want escaped and ISO encoded messages
   def body_encoded_escaped(cropped = true)
     message = (cropped ? body : body_cropped)
-    CGI.escape(Iconv.iconv('ISO-8859-15//TRANSLIT//IGNORE', 'utf-8', message).to_s)
+    CGI.escape(Iconv.iconv('ISO-8859-15//TRANSLIT//IGNORE', 'utf-8', message).first.to_s)
   end
 
   def to_numbers_array
