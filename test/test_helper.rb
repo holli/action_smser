@@ -3,7 +3,7 @@ ENV["RAILS_ENV"] = "test"
 
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 require "rails/test_help"
-require 'ruby-debug'
+#require 'ruby-debug'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -16,8 +16,8 @@ silence_stream(STDOUT) do
   ActiveRecord::Migrator.migrate File.expand_path('../../db/migrate/', __FILE__)
 end
 
-  #def drop_all_tables
-  #  ActiveRecord::Base.connection.tables.each do |table|
-  #    ActiveRecord::Base.connection.drop_table(table)
-  #  end
-  #end
+#def drop_all_tables
+#  ActiveRecord::Base.connection.tables.each do |table|
+#    ActiveRecord::Base.connection.drop_table(table)
+#  end
+#end

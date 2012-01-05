@@ -1,6 +1,8 @@
 # ActionSmser
 
-Simple way to use sms-services in the same way as email services (ActionSmser == ActionEmailer). See examples
+Simple way to use sms-services in the same way as email services (ActionSmser == ActionEmailer). See examples below.
+
+[<img src="https://secure.travis-ci.org/holli/action_smser.png" />](http://travis-ci.org/holli/action_smser)
 
 # Install
 
