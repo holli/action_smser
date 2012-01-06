@@ -121,7 +121,7 @@ class ActionSmser::Base
   end
 
   def from_encoded
-    @from
+    from.to_s.gsub(/^(\+|0)/, "")
   end
 
   def logger

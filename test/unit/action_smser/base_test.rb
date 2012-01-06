@@ -29,6 +29,11 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
     assert_equal [str], @sms.to_as_array
   end
 
+  test "from_encoded should remove leading + and 0" do
+    @sms = MockSms.basic_sms("+358555", "+358123" , @body)
+    assert_equal "358123", @sms.from_encoded
+  end
+
   test "body should be possible to encode" do
     assert_equal "Body+with+%E4%E4kk%F6set+end", @sms.body_encoded_escaped
   end
