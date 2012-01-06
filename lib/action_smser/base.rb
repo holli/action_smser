@@ -15,6 +15,25 @@ class ActionSmser::Base
       super || method_defined?(method.to_sym)
     end
 
+    # http://en.wikipedia.org/wiki/GSM_03.38 , some chars takes 2 spaces
+    SMS_DOUBLE_CHARS = '€[\]^{|}~'   # http://sites.google.com/site/freesmsuk/gsm7-encoding
+    def message_real_length(message)
+      i = 0
+      message.to_s.chars.each do |char| i += SMS_DOUBLE_CHARS.include?(char) ? 2 : 1 end
+      i
+    end
+    # Make sure that double chars are taken account
+    def message_real_cropped(message, max_length = 159)
+      result = ""
+      length = 0
+      message.to_s.chars.each do |char|
+        length += SMS_DOUBLE_CHARS.include?(char) ? 2 : 1
+        result << char if length <= max_length
+      end
+      result
+    end
+
+
   end
 
   ##################################################################
@@ -46,19 +65,15 @@ class ActionSmser::Base
     @body = options[:body]
     @to = options[:to]
     @from = options[:from]
+    self
   end
 
   def to_s
     "Sms #{sms_type} - From: #{from.inspect}, To: #{to.inspect}, Body: #{body.inspect}, Valid: #{@valid}"
   end
 
-  # If you want mark the message as invalid
-  def set_invalid
-    @valid = false
-  end
-
   def valid?
-    @valid && !body.blank? && !@to.blank? && !@from.blank?
+    !body.blank? && !to_numbers_array.blank? && !from.blank?
   end
 
   def delivery_method
@@ -71,7 +86,7 @@ class ActionSmser::Base
 
     logger.info "Sending sms (#{self.to_s})"
 
-    response = delivery_method.deliver(self)
+    response = delivery_method.deliver(self) if valid?
 
     self.send(:after_delivery, response) if self.respond_to?(:after_delivery)
 
@@ -79,25 +94,11 @@ class ActionSmser::Base
     #SmsSentInfo.create_from_http_response(@response, self.sender, recipients_receive_sms, sms_type, self.message)
   end
 
-  # http://en.wikipedia.org/wiki/GSM_03.38 , some chars takes 2 spaces
-  def body_length
-    i = 0
-    body.to_s.chars.each do |char| i += DOUBLE_CHARS.include?(char) ? 2 : 1 end
-    i
-  end
-  def body_cropped(max_length = 159)
-    result = ""
-    length = 0
-    msg.to_s.chars.each do |char|
-      length += DOUBLE_CHARS.include?(char) ? 2 : 1
-      result << char if length <= max_length
-    end
-    result
-  end
   # Most of the gateways want escaped and ISO encoded messages
-  def body_encoded_escaped(cropped = true)
-    message = (cropped ? body : body_cropped)
-    CGI.escape(Iconv.iconv('ISO-8859-15//TRANSLIT//IGNORE', 'utf-8', message).first.to_s)
+  # Also make sure that its max 500 chars long
+  def body_encoded_escaped
+    msg = body.first(500)
+    CGI.escape(Iconv.iconv('ISO-8859-15//TRANSLIT//IGNORE', 'utf-8', msg).first.to_s)
   end
 
   # make sure that to is an array and remove leading '+' or '0' chars

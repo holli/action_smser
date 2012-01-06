@@ -27,6 +27,11 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
     assert_equal "Body+with+%E4%E4kk%F6set+end", @sms.body_encoded_escaped
   end
 
+  test "body should be cropped to 500 chars, limit extra looong messages" do
+    @sms.body = (1..1000).map{'a'}.to_s
+    assert_equal 500, @sms.body_encoded_escaped.size
+  end
+
   test "should be valid sms" do
     assert @sms.valid?
   end
@@ -47,6 +52,16 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
   test "after delivery it should call delivery_observer if it's present" do
     @sms.expects(:after_delivery).once
     assert @sms.deliver
+  end
+
+  test "message_real_length should return real sms lenght" do
+    assert_equal 4, ActionSmser::Base.message_real_length("a[a")
+  end
+  test "message_real_crop should return cropped message with sms chars taken account" do
+    assert_equal "a[a[", ActionSmser::Base.message_real_cropped("a[a[", 6)
+    assert_equal "a[a", ActionSmser::Base.message_real_cropped("a[a[", 5)
+    assert_equal "a[a", ActionSmser::Base.message_real_cropped("a[a[", 4)
+    assert_equal "a[", ActionSmser::Base.message_real_cropped("a[a[", 3)
   end
 
 end
