@@ -66,10 +66,36 @@ https://github.com/holli/action_smser/blob/master/lib/action_smser/delivery_meth
 
 Gem handles collecting and analysing of delivery reports. This enables you to make sure that your gateway works.
 
+Delivery reports can be seen at http://localhost.inv:3000/action_smser/delivery_reports/
+
+Parsers and access infos can be implemented by creating a class with admin_access and process_delivery_report methods.
+See example below.
+
 ```
 in /config/initializers/active_smser.rb
 
 ActionSmser.delivery_options[:save_delivery_reports] = true
+
+
+class ActionSmserConfigExample
+  def self.admin_access(controller)
+    if controller.session[:admin_logged].blank?
+      return controller.session[:admin_logged]
+    else
+      return true
+    end
+  end
+
+  def self.process_delivery_report(params)
+    if params["DeliveryReport"] && params["DeliveryReport"]["message"]
+      info = params["DeliveryReport"]["message"]
+      return info["id"], info["status"]
+    else
+      return nil, nil
+    end
+  end
+end
+
 
 # This is simple proc that is used in a before filter, if it returns true it allows access to
 # http://localhost.inv:3000/action_smser/delivery_reports/ with infos about delivery reports
@@ -83,33 +109,6 @@ test_gateway = lambda
 # /action_smser/delivery_reports/gateway_commit/test_gateway
 # where 'test_gateway' is the part that is used for locating right parser.
 ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => test_gateway}
-
-
-
-class ActionSmserConfigExample
-
-  def admin_access(controller)
-    if controller.session[:admin_logged].blank?
-      return controller.session[:admin_logged]
-    else
-      return true
-    end
-  end
-
-
-  def process_delivery_report(params)
-    if params["DeliveryReport"] && params["DeliveryReport"]["message"]
-      info = params["DeliveryReport"]["message"]
-      return info["id"], info["status"]
-    else
-      return nil, nil
-    end
-  end
-
-
-
-end
-
 
 
 ```
