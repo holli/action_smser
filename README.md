@@ -18,7 +18,7 @@ bundle exec rake railties:install:migrations FROM=ActionSmser
 rake db:migrate
 ```
 
-## SMS sending
+## SMS sending basic
 
 **Default**
 
@@ -55,6 +55,12 @@ Using
 sms=TestSms.hello_user('358407573855', '358407573855', "Olli")
 sms.deliver
 ```
+
+## Delivery methods
+
+Optional delivery methods can be used by creating classes under "ActionSmser::DeliveryMethods" and referring
+them as downcase infos. See example of :simple_http at
+https://github.com/holli/action_smser/blob/master/lib/action_smser/delivery_methods/simple_http.rb
 
 ## Delivery reports
 
