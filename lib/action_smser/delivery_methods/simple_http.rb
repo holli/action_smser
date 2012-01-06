@@ -32,8 +32,6 @@ module ActionSmser::DeliveryMethods
         return results
       end
 
-
-
     end
 
     def self.deliver_http_request(sms, options, path)

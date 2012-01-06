@@ -43,7 +43,10 @@ class ActionSmser::SimpleHttpTest < ActiveSupport::TestCase
     @dr = @sms_delivery.last
     assert_equal "123555123", @dr.to, "receiver wrong"
     assert_equal "id_6666", @dr.msg_id, "id wrong"
-
   end
+
+  # There are better frameworks for testing http requests
+  # http://railscasts.com/episodes/276-testing-time-web-requests
+  # https://github.com/chrisk/fakeweb
 
 end

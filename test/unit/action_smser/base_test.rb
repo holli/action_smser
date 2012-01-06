@@ -23,6 +23,12 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
     assert_equal "555123555,123,358123555123", @sms.to_encoded
   end
 
+  test "should be ok with single receivers" do
+    str = "123123"
+    @sms = MockSms.basic_sms(str, @sender, @body)
+    assert_equal [str], @sms.to_as_array
+  end
+
   test "body should be possible to encode" do
     assert_equal "Body+with+%E4%E4kk%F6set+end", @sms.body_encoded_escaped
   end
@@ -34,6 +40,11 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
 
   test "should be valid sms" do
     assert @sms.valid?
+  end
+
+  test "should not be valid if no recipients" do
+    @sms = MockSms.basic_sms([nil, ""], @sender, @body)
+    assert !@sms.valid?
   end
 
   test "should have saved sms_type" do

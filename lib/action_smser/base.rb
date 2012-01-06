@@ -74,7 +74,7 @@ class ActionSmser::Base
   end
 
   def valid?
-    !body.blank? && !to_numbers_array.blank? && !from.blank?
+    !body.blank? && !from.blank? && !to_numbers_array.collect{|number| number.to_s.blank? ? nil : true}.compact.blank?
   end
 
   def delivery_method
@@ -110,6 +110,10 @@ class ActionSmser::Base
       [@to.to_s]
     end
     array.collect{|number| number.gsub(/^(\+|0)/, "")}
+  end
+
+  def to_as_array
+    @to.is_a?(Array) ? @to : [@to]
   end
 
   def to_encoded

@@ -12,7 +12,7 @@
   total_delivered = ar_delivered.count
 %>
 
-<% if ActiveRecord::Base.connection.adapter_name.to_s.include?("mysql") %>
+<% if ActiveRecord::Base.connection.adapter_name.downcase.to_s.include?("mysql") %>
 
   <ul>
     <% ["00:00:30", "00:01:00", "00:02:00", "00:10:00", "00:30:00", "00:90:00"].each do |time| %>

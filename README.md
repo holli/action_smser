@@ -131,6 +131,26 @@ class TestSms < ActionSmser::Base
 end
 ```
 
+## Testing
+
+Default delivery method is "test_array". It saves delivered sms to ActionSmser::DeliveryMethods::TestArray.deliveries to help test your own software.
+Its normal array, see sms by 'ActionSmser::DeliveryMethods::TestArray.deliveries' and
+clear it between tests by 'ActionSmser::DeliveryMethods::TestArray.deliveries.clear'
+
+
+```
+E.g. in functional tests
+
+test "should send right msg" do
+  ActionSmser::DeliveryMethods::TestArray.deliveries.clear
+  get :send_invite, :user_id => 1
+
+  assert_equal 1, ActionSmser::DeliveryMethods::TestArray.deliveries.size
+  assert_equal "UserSms.sent_invite", ActionSmser::DeliveryMethods::TestArray.deliveries.first.sms_type
+end
+
+```
+
 # Requirements
 
 Gem has been tested with ruby 1.8.7, 1.9.2 and Rails 3.1.
