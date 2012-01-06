@@ -2,20 +2,30 @@ require 'test_helper'
 
 class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
-  test "gateway_commit with existing dr" do
-    @msg_id = "102010314204056202"
-    @dr = ActionSmser::DeliveryReport.create(:msg_id => @msg_id, :status => 'ORIGINAL_STATUS')
+  class SmsTestSetup
+    def self.admin_access(controller)
+      if controller.session[:admin_logged].blank?
+        return controller.session[:admin_logged]
+      else
+        return true
+      end
+    end
 
-    test_gateway = lambda {|params|
+    def self.process_delivery_report(params)
       if params["DeliveryReport"] && params["DeliveryReport"]["message"]
         info = params["DeliveryReport"]["message"]
         return info["id"], info["status"]
       else
         return nil, nil
       end
-    }
+    end
+  end
 
-    ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => test_gateway}
+  test "gateway_commit with existing dr" do
+    @msg_id = "102010314204056202"
+    @dr = ActionSmser::DeliveryReport.create(:msg_id => @msg_id, :status => 'ORIGINAL_STATUS')
+
+    ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
 
     get 'gateway_commit', :use_route => :action_smser, :gateway => 'test_gateway',
         "DeliveryReport"=>{"message"=>{"id"=>@msg_id, "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
@@ -29,15 +39,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
   end
 
   test "gateway_commit without dr" do
-
-     test_gateway = lambda {|params|
-      if params["DeliveryReport"] && params["DeliveryReport"]["message"]
-        info = params["DeliveryReport"]["message"]
-        return info["id"], info["status"]
-      else
-        return nil, nil
-      end
-    }
+    ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
 
     get 'gateway_commit', :use_route => :action_smser, :gateway => 'test_gateway',
         "DeliveryReport"=>{"message"=>{"id"=>"wrongid", "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
@@ -58,15 +60,32 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
   test "admin_access_only" do
     get 'index', :use_route => :action_smser
     assert_response 403
+    assert_template nil
   end
 
-  test "index" do
+  test "index with always enabled admin" do
     2.times do
       ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
     end
     ActionSmser::DeliveryReportsController.any_instance.stubs(:admin_access_only).returns(true)
     get 'index', :use_route => :action_smser
     assert_response :success
+    assert_template :index
+  end
+
+  test "admin_access_only setup with class" do
+    default = ActionSmser.delivery_options[:admin_access]
+    ActionSmser.delivery_options[:admin_access] = SmsTestSetup
+    2.times do
+      ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
+    end
+    session[:admin_logged] = true
+    get 'index', :use_route => :action_smser
+
+    assert_response :success
+    assert_template :index
+
+    ActionSmser.delivery_options[:admin_access] = default
 
   end
 

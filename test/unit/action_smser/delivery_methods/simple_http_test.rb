@@ -9,7 +9,7 @@ class ActionSmser::SimpleHttpTest < ActiveSupport::TestCase
   end
 
   setup do
-    @receivers = ["555123555", "", "123555123"]
+    @receivers = ["555123555", "123555123"]
     @sender = "555666"
     @body = "Body with ääkköset end"
     @sms = MockSms.basic_sms(@receivers, @sender, @body)
@@ -41,7 +41,7 @@ class ActionSmser::SimpleHttpTest < ActiveSupport::TestCase
     assert_equal @delivery_reports_count + 2, ActionSmser::DeliveryReport.count
 
     @dr = @sms_delivery.last
-    assert_equal 123555123, @dr.to, "receiver wrong"
+    assert_equal "123555123", @dr.to, "receiver wrong"
     assert_equal "id_6666", @dr.msg_id, "id wrong"
 
   end

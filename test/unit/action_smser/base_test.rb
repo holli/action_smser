@@ -6,17 +6,21 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
     def basic_sms(to, from, body)
       sms(:to => to, :from => from, :body => body)
     end
+
+    def after_delivery(result)
+      puts "generic delivery observer, mock this"
+    end
   end
 
   setup do
-    @receivers = ["555123555", "", "123555123"]
+    @receivers = ["555123555", "123", "+358123555123"]
     @sender = "555666"
     @body = "Body with ääkköset end"
     @sms = MockSms.basic_sms(@receivers, @sender, @body)
   end
 
   test "receivers should be joined by commas" do
-    assert_equal "555123555,123555123", @sms.to_encoded
+    assert_equal "555123555,123,358123555123", @sms.to_encoded
   end
 
   test "body should be possible to encode" do
@@ -38,6 +42,11 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
 
   test "should have test_array as delivery method" do
     assert_equal ActionSmser::DeliveryMethods::TestArray, @sms.delivery_method
+  end
+
+  test "after delivery it should call delivery_observer if it's present" do
+    @sms.expects(:after_delivery).once
+    assert @sms.deliver
   end
 
 end

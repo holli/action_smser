@@ -9,7 +9,7 @@ class ActionSmser::TestArrayTest < ActiveSupport::TestCase
   end
 
   setup do
-    @receivers = ["555123555", "", "123555123"]
+    @receivers = ["555123555", "123555123"]
     @sender = "555666"
     @body = "Body with ääkköset end"
     @sms = MockSms.basic_sms(@receivers, @sender, @body)

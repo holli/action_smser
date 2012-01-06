@@ -19,20 +19,20 @@ module ActionSmser::DeliveryMethods
       logger.info response.body if !response.blank?
       sms.delivery_info = response
 
+      # Results include sms_id or error code in each line
+
       results = response.body.split("\n")
-      if results.first.to_i < 0
-        return false
-      else
-        if sms.delivery_options[:save_delivery_reports]
-          delivery_reports = []
-          sms.to_numbers_array.each_with_index do |to, i|
-            delivery_reports << ActionSmser::DeliveryReport.create_from_sms(sms, to, results[i])
-          end
-          return delivery_reports
-        else
-          return results
+      if sms.delivery_options[:save_delivery_reports]
+        delivery_reports = []
+        sms.to_numbers_array.each_with_index do |to, i|
+          delivery_reports << ActionSmser::DeliveryReport.create_from_sms(sms, to, results[i])
         end
+        return delivery_reports
+      else
+        return results
       end
+
+
 
     end
 

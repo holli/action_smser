@@ -10,7 +10,8 @@ module ActionSmser
 
         ActionSmser::Logger.info("Gateway_commit found parser for gateway: #{params['gateway']}")
 
-        msg_id, status = ActionSmser.delivery_options[:gateway_commit][params['gateway']].call(params)
+        #msg_id, status = ActionSmser.delivery_options[:gateway_commit][params['gateway']].call(params)
+        msg_id, status = ActionSmser.delivery_options[:gateway_commit][params['gateway']].send(:process_delivery_report, params)
 
         if msg_id && status
           dr = ActionSmser::DeliveryReport.where(:msg_id => msg_id).first
@@ -37,7 +38,7 @@ module ActionSmser
     end
 
     def admin_access_only
-      if !ActionSmser.delivery_options[:admin_access].blank? && ActionSmser.delivery_options[:admin_access].call(self)
+      if !ActionSmser.delivery_options[:admin_access].blank? && ActionSmser.delivery_options[:admin_access].send(:admin_access, self)
         return true
       else
         render :text => "Forbidden, only for admins", :status => 403

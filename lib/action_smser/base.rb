@@ -71,8 +71,11 @@ class ActionSmser::Base
 
     logger.info "Sending sms (#{self.to_s})"
 
-    delivery_method.deliver(self)
+    response = delivery_method.deliver(self)
 
+    self.send(:after_delivery, response) if self.respond_to?(:after_delivery)
+
+    response
     #SmsSentInfo.create_from_http_response(@response, self.sender, recipients_receive_sms, sms_type, self.message)
   end
 
@@ -97,13 +100,14 @@ class ActionSmser::Base
     CGI.escape(Iconv.iconv('ISO-8859-15//TRANSLIT//IGNORE', 'utf-8', message).first.to_s)
   end
 
+  # make sure that to is an array and remove leading '+' or '0' chars
   def to_numbers_array
-    if @to.is_a?(Array)
-      # harsh check that receivers are a list of numbers
-      @to.collect{|number| number.to_i if number.to_i>1000}.compact
+    array = if @to.is_a?(Array)
+      @to.collect{|number| number.to_s}
     else
       [@to.to_s]
     end
+    array.collect{|number| number.gsub(/^(\+|0)/, "")}
   end
 
   def to_encoded

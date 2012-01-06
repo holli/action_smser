@@ -67,33 +67,63 @@ ActionSmser.delivery_options[:save_delivery_reports] = true
 
 # This is simple proc that is used in a before filter, if it returns true it allows access to
 # http://localhost.inv:3000/action_smser/delivery_reports/ with infos about delivery reports
-ActionSmser.delivery_options[:admin_access] =
-    lambda {|controller|
-      if controller.session[:admin_logged].blank?
-        return controller.session[:admin_logged]
-      else
-        return true
-      end
-    }
+ActionSmser.delivery_options[:admin_access] = ActionSmserConfigExample
 
 # This gives ActionSmser way to parse infos from pushed to gateway
 # Params is all params gotten in the request
-test_gateway = lambda {|params|
-  if params["DeliveryReport"] && params["DeliveryReport"]["message"]
-    info = params["DeliveryReport"]["message"]
-    return info["id"], info["status"]
-  else
-    return nil, nil
-  end
-}
+test_gateway = lambda
 
 # Parser is used with urls like
 # /action_smser/delivery_reports/gateway_commit/test_gateway
 # where 'test_gateway' is the part that is used for locating right parser.
 ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => test_gateway}
 
+
+
+class ActionSmserConfigExample
+
+  def admin_access(controller)
+    if controller.session[:admin_logged].blank?
+      return controller.session[:admin_logged]
+    else
+      return true
+    end
+  end
+
+
+  def process_delivery_report(params)
+    if params["DeliveryReport"] && params["DeliveryReport"]["message"]
+      info = params["DeliveryReport"]["message"]
+      return info["id"], info["status"]
+    else
+      return nil, nil
+    end
+  end
+
+
+
+end
+
+
+
 ```
 
+## Other options
+
+Observers can be used by implementing "delivery_observer" in your sms class
+
+```
+class TestSms < ActionSmser::Base
+  def hello_user(to, from, user)
+    str = "Hello #{user}."
+    sms(:to => to, :from => from, :body => str)
+  end
+
+  def after_delivery(response_from_delivery_method)
+    puts "Done with delivery"
+  end
+end
+```
 
 # Requirements
 
