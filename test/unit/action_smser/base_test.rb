@@ -28,7 +28,7 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
   end
 
   test "body should be cropped to 500 chars, limit extra looong messages" do
-    @sms.body = (1..1000).map{'a'}.to_s
+    @sms.body = (1..1000).map{'a'}.join
     assert_equal 500, @sms.body_encoded_escaped.size
   end
 

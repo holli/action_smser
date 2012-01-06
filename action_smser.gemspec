@@ -7,16 +7,16 @@ require "action_smser/version"
 Gem::Specification.new do |s|
   s.name        = "action_smser"
   s.version     = ActionSmser::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of ActionSmser."
-  s.description = "TODO: Description of ActionSmser."
+  s.authors     = ["Olli Huotari"]
+  s.email       = ["olli.huotari@iki.fi"]
+  s.homepage    = "https://github.com/holli/action_smser"
+  s.summary     = "Simple way to use SMS (Short Message Service) in the same way as ActionMailer (ActionSmser == ActionMailer). Includes also delivery reports and easy way to add custom gateways."
+  s.description = "Simple way to use SMS (Short Message Service) in the same way as ActionMailer (ActionSmser == ActionMailer). Includes also delivery reports and easy way to add custom gateways."
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "rails", "~> 3.1.3"
+  s.add_dependency "rails", "~> 3.1"
 
   s.add_development_dependency "mocha"
   #s.add_development_dependency "ruby-debug"
