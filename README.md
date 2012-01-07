@@ -92,19 +92,17 @@ class ActionSmserConfigExample
 
   # This has to return array of hashes. In hash msg_id is the key and other params are updated to db
   def self.process_delivery_report(params)
+    processable_array = []
     if params["DeliveryReport"] && params["DeliveryReport"]["message"]
-      info_array = []
       reports = params["DeliveryReport"]["message"]
       reports = [reports] unless reports.is_a?(Array)
 
       reports.each do |report|
-        info_array << {'msg_id' => report['id'], 'status' => report['status']}
+        processable_array << {'msg_id' => report['id'], 'status' => report['status']}
       end
-
-      return info_array
-    else
-      return []
     end
+
+    return processable_array
   end
 end
 
