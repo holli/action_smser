@@ -13,10 +13,17 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
     def self.process_delivery_report(params)
       if params["DeliveryReport"] && params["DeliveryReport"]["message"]
-        info = params["DeliveryReport"]["message"]
-        return info["id"], info["status"]
+        info_array = []
+        reports = params["DeliveryReport"]["message"]
+        reports = [reports] unless reports.is_a?(Array)
+
+        reports.each do |report|
+          info_array << {'msg_id' => report['id'], 'status' => report['status']}
+        end
+
+        return info_array
       else
-        return nil, nil
+        return []
       end
     end
   end
@@ -32,11 +39,33 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
 
     assert_response :success
-    assert @response.body.include?("Update"), "should have responed about saving"
+    assert @response.body.downcase.include?("update"), "should have responed about saving"
     @dr.reload
     assert_equal "DELIVERED", @dr.status
-
   end
+
+  test "asdf gateway_commit with multiple records" do
+    @msg_id = "102010314204056202"
+    @msg_id2 = "99999999999999999"
+    @dr = ActionSmser::DeliveryReport.create(:msg_id => @msg_id, :status => 'ORIGINAL_STATUS')
+    @dr2 = ActionSmser::DeliveryReport.create(:msg_id => @msg_id2, :status => 'ORIGINAL_STATUS')
+
+    ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
+
+    get 'gateway_commit', :use_route => :action_smser, :gateway => 'test_gateway',
+        "DeliveryReport"=>
+            {"message"=>[{"id"=>@msg_id.to_s, "status"=>"DELIVERED"},
+                         {"id"=>@msg_id2, "status"=>"DELIVERED"}]}
+
+    assert_response :success
+    assert @response.body.downcase.include?("update"), "should have responded about saving"
+    @dr.reload
+    @dr2.reload
+    assert_equal "DELIVERED", @dr.status, "should have updated first record"
+    assert_equal "DELIVERED", @dr2.status, "should have updated second record"
+  end
+
+
 
   test "gateway_commit without dr" do
     ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}

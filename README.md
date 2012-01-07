@@ -15,14 +15,14 @@ Gemfile ->
 
 gem 'action_smser'
 
+# To use delivery reports
 bundle exec rake railties:install:migrations FROM=ActionSmser
 rake db:migrate
 ```
 
 ## SMS sending basic
 
-**Default**
-
+**Initializing**
 ```
 in /config/initializers/active_smser.rb
 
@@ -39,6 +39,7 @@ end
 
 ```
 
+**Mailer classes**
 ```
 in /app/mailers/test_sms.rb
 
@@ -50,6 +51,7 @@ class TestSms < ActionSmser::Base
 end
 ```
 
+**Sending sms**
 ```
 Using
 
@@ -79,6 +81,7 @@ ActionSmser.delivery_options[:save_delivery_reports] = true
 
 
 class ActionSmserConfigExample
+  # This returns true if we can show delivery reports page, return true if always permissed
   def self.admin_access(controller)
     if controller.session[:admin_logged].blank?
       return controller.session[:admin_logged]
@@ -87,12 +90,20 @@ class ActionSmserConfigExample
     end
   end
 
+  # This has to return array of hashes. In hash msg_id is the key and other params are updated to db
   def self.process_delivery_report(params)
     if params["DeliveryReport"] && params["DeliveryReport"]["message"]
-      info = params["DeliveryReport"]["message"]
-      return info["id"], info["status"]
+      info_array = []
+      reports = params["DeliveryReport"]["message"]
+      reports = [reports] unless reports.is_a?(Array)
+
+      reports.each do |report|
+        info_array << {'msg_id' => report['id'], 'status' => report['status']}
+      end
+
+      return info_array
     else
-      return nil, nil
+      return []
     end
   end
 end
@@ -166,7 +177,8 @@ Submit suggestions or feature requests as a GitHub Issue or Pull Request. Rememb
 
 ### Similar gems
 
-There are many gems to use custom gateways but none of them had a possibility to create classes like smser.
+There are many gems to use custom gateways but none of them had a possibility to create classes like smser. Also these don't have
+delivery reporting.
 
 - https://github.com/dwilkie/action_sms
 - https://github.com/forrestgrant/textr
