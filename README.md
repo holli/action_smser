@@ -23,6 +23,7 @@ rake db:migrate
 ## SMS sending basic
 
 **Initializing**
+
 ```
 in /config/initializers/active_smser.rb
 
@@ -40,6 +41,7 @@ end
 ```
 
 **Mailer classes**
+
 ```
 in /app/mailers/test_sms.rb
 
@@ -52,6 +54,7 @@ end
 ```
 
 **Sending sms**
+
 ```
 Using
 
