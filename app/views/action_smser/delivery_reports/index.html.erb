@@ -1,9 +1,27 @@
 
-<h1>Delivery status for the past month (1.month.ago..1.minute.ago)</h1>
+<%
+params['time_span'] ||= 'Last Month'
 
-<% time_span = 1.month.ago..1.minute.ago %>
+time_span = case params['time_span'].to_s.downcase
+  when 'previous week'
+    2.weeks.ago..1.week.ago
+  when 'last month'
+    1.month.ago..2.minutes.ago
+  else
+    1.week.ago..2.minutes.ago
+  end
+%>
 
-<h2>Delivered within (hour:min:sec)</h2>
+
+<h1>Delivery Reports Summary for <%= params['time_span'] %></h1>
+
+
+Show summary:
+<%= link_to 'Last week', delivery_reports_path(:time_span => 'Last Week') %>,
+<%= link_to 'Week before that', delivery_reports_path(:time_span => 'Previous Week') %> or
+<%= link_to 'Last month', delivery_reports_path(:time_span => 'Last Month') %>.
+
+<h2>Delivered Within (hour:min:sec)</h2>
 
 <%
   ar = ActionSmser::DeliveryReport.where(:created_at => time_span)
@@ -14,49 +32,94 @@
 
 <% if ActiveRecord::Base.connection.adapter_name.downcase.to_s.include?("mysql") %>
 
-  <ul>
-    <% ["00:00:30", "00:01:00", "00:02:00", "00:10:00", "00:30:00", "00:90:00"].each do |time| %>
+  <table>
+    <tr>
+      <th>DeliveryTime</th>
+      <th>Sms</th>
+      <th>% of sent sms</th>
+      <th>% of delivered sms</th>
+    </tr>
+
+    <% ["00:00:30", "00:01:00", "00:02:00", "00:10:00", "00:30:00", "00:90:00", "24:00:00", "48:00:00"].each do |time| %>
       <% dev_count = ar_delivered.where('TIMEDIFF(status_updated_at, created_at) < ?', time).count %>
-      <li><strong><%= time %>:</strong>
-        Delivered <%= dev_count %> sms.
-        <strong><%= number_to_percentage(100.0 * dev_count / total) %>%</strong> of total sms.
-        <%= number_to_percentage(100.0 * dev_count / total_delivered) %>% of delivered sms.</li>
+      <tr>
+        <td><%= time %></td>
+        <td><%= dev_count %></td>
+        <td><%= number_to_percentage(100.0 * dev_count / total, :precision => 2) %></td>
+        <td><%= number_to_percentage(100.0 * dev_count / total_delivered, :precision => 2) %></td>
+      </tr>
     <% end %>
-  </ul>
+
+  </table>
 
 <% else %>
   Delivery report uses timediff sql and has only been tested with MySql. Disabled with other adapters for now.
 <% end %>
 
-<h2>Status</h2>
+<h2>DeliveryReport Statuses</h2>
 <ul>
 <%
    quest = ActionSmser::DeliveryReport.where(:created_at => time_span)
    total = quest.count
    grouped_by_status = quest.group(:status).count.each do |key, val| %>
 
-    <li><strong><%= key %></strong> : <%= val %> (<%= number_to_percentage(100.0 * val / total) %>%)</li>
+    <li>
+      <strong><%= key %></strong>:
+      &nbsp;&nbsp;
+      <%= val %> sms
+      &nbsp;&nbsp;
+      (<strong><%= number_to_percentage(100.0 * val / total, :precision => 2) %></strong>)
+    </li>
 <% end %>
 </ul>
 
-<h2>Msg type</h2>
-<ul>
+<h2>By Sms Type</h2>
+<table>
+  <tr>
+    <th>SmsType</th>
+    <th>Count</th>
+    <th>% of total</th>
+    <th>Delivered count</th>
+    <th>Delivery %</th>
+  </tr>
+
 <%
    quest = ActionSmser::DeliveryReport.where(:created_at => time_span)
    total = quest.count
    grouped_by_status = quest.group(:sms_type).count.each do |key, val| %>
-
-    <li><strong><%= key %></strong> : <%= val %> (<%= number_to_percentage(100 * val / total) %>%)</li>
+   <tr>
+     <td><strong><%= key %></strong></td>
+     <td><%= val %></td>
+     <td><strong><%= number_to_percentage(100 * val / total, :precision => 2) %></strong></td>
+     <td><%= sms_count = ActionSmser::DeliveryReport.where(:created_at => time_span).where(:sms_type => key).where(:status => 'delivered').count %></td>
+     <td><strong><%= number_to_percentage(100 * sms_count / val, :precision => 2) %></strong></td>
+   </tr>
 <% end %>
-</ul>
+</table>
+
 
 <hr>
 
-<h1>40 most recent delivery_reports</h1>
+<% items_within_page = 20 %>
+<h1 id="delivery_reports_list"><%= items_within_page %> delivery_reports ordered by created_at</h1>
 
-<table>
+<%
+offset = params[:offset].to_i
+offset = 0 if offset < -0
+%>
+
+<p>
+  <strong>List offset: <%= offset %>.</strong>
+  Add
+  <%= link_to("- #{items_within_page}",  delivery_reports_path(:offset => offset-items_within_page, :anchor => 'delivery_reports_list')) unless offset == 0 %>
+  <%= link_to "+ #{items_within_page}",  delivery_reports_path(:offset => offset+items_within_page, :anchor => 'delivery_reports_list') %>
+  to offset
+</p>
+
+<table style="margin-top: 20px;">
   <tr>
-    <th>Msg</th>
+    <th>Created_at</th>
+    <th>Msg id</th>
     <th>Status</th>
     <th>Status updated at</th>
     <th>Recipient</th>
@@ -64,11 +127,12 @@
     <th>Text body</th>
   </tr>
 
-<% ActionSmser::DeliveryReport.order('created_at DESC').first(30).each do |delivery_report| %>
+<% ActionSmser::DeliveryReport.order('created_at DESC').offset(offset).first(items_within_page).each do |delivery_report| %>
   <tr>
+    <td style="white-space: nowrap;"><%= delivery_report.created_at %></td>
     <td><%= delivery_report.msg_id %></td>
     <td><%= delivery_report.status %></td>
-    <td><%= delivery_report.status_updated_at %></td>
+    <td style="white-space: nowrap;"><%= delivery_report.status_updated_at %></td>
     <td><%= delivery_report.to %></td>
     <td><%= delivery_report.from %></td>
     <td><%= delivery_report.body %></td>

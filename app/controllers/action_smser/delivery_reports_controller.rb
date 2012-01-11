@@ -47,6 +47,7 @@ module ActionSmser
     before_filter :admin_access_only, :except => :gateway_commit
 
     def index
+
     end
 
     def admin_access_only

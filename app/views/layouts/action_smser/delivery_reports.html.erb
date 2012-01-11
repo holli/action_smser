@@ -7,11 +7,33 @@
   <%= csrf_meta_tags %>
 
   <STYLE type="text/css">
-    th, td { border:  1px solid gray; }
+    table {
+      border:  1px solid gray;
+      border-collapse:collapse;
+
+    }
+    th, td {
+      border:  1px solid gray;
+      padding: 1px 10px 1px 3px;
+    }
+
+    h1 { margin-top: 40px; }
+    h2 { margin-top: 40px; }
+
+    body, div {
+      color: #444;
+      font-size: 12px;
+      line-height: 150%;
+      line-height: 130%;
+      font-family: Helvetica, Arial, sans-serif;
+
+    }
+    hr { margin-top: 20px; margin-bottom: 10px; }
+    
   </STYLE>
 
 </head>
-<body>
+<body class="delivery_reports_layout">
 
 <h1>ActionSmser infos</h1>
 
@@ -26,6 +48,8 @@ Back to <%= link_to 'Main application', '/' %>
 <p>
   Stats by ActionSmser gem, see homepage: <%= link_to 'https://github.com/holli/action_smser', 'https://github.com/holli/action_smser' %>
 </p>
+
+<p style="margin-top: 400px"></p>
 
 
 </body>

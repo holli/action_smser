@@ -41,7 +41,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
     assert_equal "DELIVERED", @dr.status
   end
 
-  test "asdf gateway_commit with multiple records" do
+  test "gateway_commit with multiple records" do
     @msg_id = "102010314204056202"
     @msg_id2 = "99999999999999999"
     @dr = ActionSmser::DeliveryReport.create(:msg_id => @msg_id, :status => 'ORIGINAL_STATUS')
@@ -83,7 +83,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
   end
 
 
-  test "admin_access_only" do
+  test "index with forbidden admin_access (default access mode)" do
     get 'index', :use_route => :action_smser
     assert_response 403
     assert_template nil
@@ -99,7 +99,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
     assert_template :index
   end
 
-  test "admin_access_only setup with class" do
+  test "index with admin_access lambda with right login info" do
     default = ActionSmser.delivery_options[:admin_access]
     ActionSmser.delivery_options[:admin_access] = SmsTestSetup
     2.times do
