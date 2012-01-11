@@ -56,9 +56,9 @@ end
 **Sending sms**
 
 ```
-Using
+E.g. from console or controller
 
-sms=TestSms.hello_user('358407573855', '358407573855', "Olli")
+sms = TestSms.hello_user('358407573855', '358407573855', "Olli")
 sms.deliver
 ```
 
