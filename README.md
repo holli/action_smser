@@ -69,7 +69,8 @@ https://github.com/holli/action_smser/blob/master/lib/action_smser/delivery_meth
 
 Gem handles collecting and analysing of delivery reports. This enables you to make sure that your gateway works.
 
-Delivery reports can be seen at http://localhost.inv:3000/action_smser/delivery_reports/
+Delivery reports and a summary can be seen at http://localhost.inv:3000/action_smser/delivery_reports/ .
+Summary includes info about the amount of sent sms, delivery times, types of sms, etc.
 
 Parsers and access infos can be implemented by creating a class with admin_access and process_delivery_report methods.
 See example below.
