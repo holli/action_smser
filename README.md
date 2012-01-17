@@ -68,6 +68,21 @@ Optional delivery methods can be used by creating classes under "ActionSmser::De
 them as downcase infos. See example of :simple_http at
 https://github.com/holli/action_smser/blob/master/lib/action_smser/delivery_methods/simple_http.rb
 
+Simplest case is to use simple_http and override path
+
+```
+# Example of changing simple_http delivery path. Options are the same options that were presented above.
+
+module ActionSmser::DeliveryMethods
+  class SimpleHttp
+    def self.deliver_path(sms, options)
+      "/my_gateways_api/send?user=#{options[:username]}&password=#{options[:password]}&ValidityPeriod=24:00&sender=#{sms.from_encoded}&SMSText=#{sms.body_encoded_escaped}&GSM=#{sms.to_encoded}"
+    end
+  end
+end
+
+```
+
 ## Delivery reports
 
 Gem handles collecting and analysing of delivery reports. This enables you to make sure that your gateway works.
@@ -115,14 +130,10 @@ end
 # http://localhost.inv:3000/action_smser/delivery_reports/ with infos about delivery reports
 ActionSmser.delivery_options[:admin_access] = ActionSmserConfigExample
 
-# This gives ActionSmser way to parse infos from pushed to gateway
-# Params is all params gotten in the request
-test_gateway = lambda
-
 # Parser is used with urls like
 # /action_smser/delivery_reports/gateway_commit/test_gateway
 # where 'test_gateway' is the part that is used for locating right parser.
-ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => test_gateway}
+ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => ActionSmserConfigExample}
 
 
 ```
