@@ -16,7 +16,7 @@ Gemfile ->
 gem 'action_smser'
 
 # To use delivery reports
-bundle exec rake railties:install:migrations FROM=ActionSmser
+bundle exec rake railties:install:migrations
 rake db:migrate
 ```
 
