@@ -41,6 +41,7 @@ module ActionSmser
     end
 
     def re_deliver(gateway = :default)
+      ActionSmser::Logger.info("Re_delivering: #{self.inspect}")
       self.update_attribute(:re_delivered, true)
       
       sms_new = self.to_sms
