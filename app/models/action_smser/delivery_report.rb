@@ -2,7 +2,6 @@ module ActionSmser
   class DeliveryReport < ActiveRecord::Base
 
     has_many :re_deliveries, :class_name => self.to_s, :foreign_key => :re_delivery_of_delivery_report_id
-    puts self
     belongs_to :re_delivery_of, :class_name => self.to_s, :foreign_key => :re_delivery_of_delivery_report_id
 
     def self.build_from_sms(sms, to, msg_id)
