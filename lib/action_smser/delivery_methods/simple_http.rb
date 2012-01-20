@@ -9,10 +9,10 @@ module ActionSmser::DeliveryMethods
   # When save_delivery_reports=true it expects collection msg_ids in each line in http response
   class SimpleHttp
     
-    def self.deliver(sms)
+    def self.deliver(sms, options = nil)
       logger.info "Delivering sms by https"
 
-      options = sms.delivery_options[:simple_http]
+      options = options ? options : sms.delivery_options[:simple_http]
       deliver_path = self.deliver_path(sms, options)
       response = self.deliver_http_request(sms, options, deliver_path)
 
