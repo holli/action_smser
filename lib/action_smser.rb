@@ -1,13 +1,9 @@
 require "action_smser/engine"
 require "action_smser/base"
 
-#Dir[File.dirname(__FILE__) + '/action_smser/delivery_methods/*.rb'].each do |file|
-#  require file
-#end
 require "action_smser/delivery_methods/test_array"
 require "action_smser/delivery_methods/simple_http"
 require "action_smser/delivery_methods/nexmo"
-
 
 module ActionSmser
 

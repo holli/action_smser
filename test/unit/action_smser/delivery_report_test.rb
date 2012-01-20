@@ -75,6 +75,9 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
 
     result = @dr.re_deliver(:test_array)
 
+    assert @dr.re_delivered
+    assert ActionSmser::DeliveryReport.find(@dr.id).re_delivered?
+
     assert result.is_a?(Array)
     assert result.first.is_a?(ActionSmser::Base)
     assert result.second.is_a?(Array)

@@ -41,6 +41,8 @@ module ActionSmser
     end
 
     def re_deliver(gateway = :default)
+      self.update_attribute(:re_delivered, true)
+      
       sms_new = self.to_sms
       sms_new.sms_type = "#{sms_new.sms_type}_resent"
       sms_new.resent_of_delivery_report_id = self.id
