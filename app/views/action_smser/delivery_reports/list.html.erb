@@ -25,7 +25,10 @@ offset = 0 if offset < -0
     <th>Status updated at</th>
     <th>Recipient</th>
     <th>Sender</th>
-    <th>Text body</th>
+    <th>Sms Type</th>
+    <th>Re Delivered</th>
+    <th>Re Delivery Of</th>
+    <th>&nbsp;O</th>
   </tr>
 
 <% ActionSmser::DeliveryReport.order('created_at DESC').offset(offset).first(items_within_page).each do |delivery_report| %>
@@ -38,7 +41,10 @@ offset = 0 if offset < -0
     <td style="white-space: nowrap;"><%= delivery_report.status_updated_at %></td>
     <td><%= delivery_report.to %></td>
     <td><%= delivery_report.from %></td>
-    <td><%= delivery_report.body %></td>
+    <td><%= delivery_report.sms_type %></td>
+    <td><%= delivery_report.re_delivered? %></td>
+    <td><%= delivery_report.re_delivery_of.msg_id unless delivery_report.re_delivery_of.blank? %></td>
+    <td title="<%= delivery_report.body %>">&nbsp;O</td>
   </tr>
 <% end %>
 </table>
