@@ -40,7 +40,7 @@ class ActionSmser::Base
   ##################################################################
   ## INSTANCE METHODS
 
-  attr_accessor :body, :to, :from
+  attr_accessor :body, :to, :from, :sms_type, :resent_of_delivery_report_id
 
   # Initialized to duplicate of ActionSmser.delivery_options
   attr_accessor :delivery_options
@@ -49,16 +49,17 @@ class ActionSmser::Base
   attr_accessor :delivery_info
 
   # sms_type is string "ClassName.ActionName", initialized in beginning
-  def sms_type
-    "#{self.class}.#{@sms_action}"
-  end
+  #def sms_type
+  #  "#{self.class}.#{@sms_action}"
+  #end
 
   # Called from class.method_missing with own_sms_message when you call OwnMailer.own_sms_message
-  def initialize(method_name, *args)
+  def initialize(method_name = 'no_name_given', *args)
     @delivery_options = ActionSmser.delivery_options.dup
     @valid = true
     @sms_action = method_name
-    send method_name, *args
+    @sms_type = "#{self.class}.#{@sms_action}"
+    send method_name, *args if respond_to?(method_name)
   end
 
   # Main method for creating sms infos

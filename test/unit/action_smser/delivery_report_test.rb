@@ -10,6 +10,7 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
   end
 
   setup do
+    ActionSmser.delivery_options[:save_delivery_reports] = false
     @receivers = ["555123555", "", "123555123"]
     @sender = "555666"
     @body = "Body with ääkköset end"
@@ -50,5 +51,40 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
     assert @dr.log.include?("TEST_2")
     assert @dr.save
   end
+
+  test "to_sms" do
+    @dr = ActionSmser::DeliveryReport.create_from_sms(@sms, "123", "msg_id_a")
+
+    @dr = ActionSmser::DeliveryReport.find(@dr.id)
+    new_sms = @dr.to_sms
+
+    assert_equal @sender, @dr.from, "from info wrong"
+    assert_equal "123", @dr.to, "to info wrong"
+    assert_equal @body, @dr.body, "body info wrong"
+    assert_equal @sms.sms_type, @dr.sms_type
+  end
+
+  test "re_deliver with simple_http" do
+    ActionSmser.delivery_options[:save_delivery_reports] = true
+
+    @dr = ActionSmser::DeliveryReport.create_from_sms(@sms, "123", "msg_id_a")
+    @dr.gateway = "some_delivery"
+    @dr.save
+
+    @dr = ActionSmser::DeliveryReport.find(@dr.id)
+
+    result = @dr.re_deliver(:test_array)
+
+    assert result.is_a?(Array)
+    assert result.first.is_a?(ActionSmser::Base)
+    assert result.second.is_a?(Array)
+    assert result.second.first.is_a?(ActionSmser::DeliveryReport)
+
+    @dr_resent = ActionSmser::DeliveryReport.last
+
+    assert_equal @sender, @dr_resent.from, "from info wrong"
+    assert_equal "#{@sms.sms_type}_resent", @dr_resent.sms_type
+  end
+
 
 end

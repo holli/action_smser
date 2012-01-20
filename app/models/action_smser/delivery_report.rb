@@ -31,5 +31,26 @@ module ActionSmser
       self.log += "#{str}\n"
     end
 
+    # Copy this delivery_report information to a new sms object
+    def to_sms
+      sms_new = ActionSmser::Base.new()
+      [:sms_type, :to, :from, :body, :sms_type].each do |var|
+        sms_new.send("#{var}=", self.send(var))
+      end
+      sms_new
+    end
+
+    def re_deliver(gateway = :default)
+      sms_new = self.to_sms
+      sms_new.sms_type = "#{sms_new.sms_type}_resent"
+      sms_new.resent_of_delivery_report_id = self.id
+
+      unless gateway == :default
+        sms_new.delivery_options[:delivery_method] = gateway
+      end
+
+      [sms_new, sms_new.deliver]
+    end
+
   end
 end

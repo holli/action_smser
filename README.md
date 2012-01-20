@@ -153,6 +153,13 @@ ActionSmser.delivery_options[:gateway_commit]['test_gateway'] = ActionSmserConfi
 
 ```
 
+DeliveryReports can be searched by "dr = ::ActionSmser::DeliveryReport.where(xxx).first".
+Some helpers in delivery_reports include
+
+- dr.to_sms => creates new sms message from deliveryreport.
+- dr.resent(:gateway) => creates new sms and sends it through given gateway.
+
+
 ## Other options
 
 Observers can be used by implementing "delivery_observer" in your sms class

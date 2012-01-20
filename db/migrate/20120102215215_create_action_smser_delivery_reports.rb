@@ -12,6 +12,7 @@ class CreateActionSmserDeliveryReports < ActiveRecord::Migration
       t.string :body
 
       t.string :gateway
+      t.integer :resent_of_delivery_report_id
 
       t.timestamps
     end
