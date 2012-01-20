@@ -6,6 +6,7 @@ module ActionSmser::DeliveryMethods
   # Very simple implementation of http request to gateway. Options used are
   # server, use_ssl, username, password
   # overwrite deliver_path(sms, options) with your own if you have different type of path
+  # When save_delivery_reports=true it expects collection msg_ids in each line in http response
   class SimpleHttp
     
     def self.deliver(sms)
@@ -34,6 +35,7 @@ module ActionSmser::DeliveryMethods
 
     end
 
+    # This is also used by other delivery methods (e.g. nexmo)
     def self.deliver_http_request(sms, options, path)
       # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
       # http://notetoself.vrensk.com/2008/09/verified-https-in-ruby/
@@ -52,7 +54,7 @@ module ActionSmser::DeliveryMethods
           response = http.request(Net::HTTP::Get.new(path)) unless Rails.env.test? #Never request by accident in test environment.
         end
       else
-        logger.warn "SimpleHttp does never make real http requests in test environment!"
+        logger.warn "DeliveryMethods does never make real http requests in test environment!"
       end
 
       response

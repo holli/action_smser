@@ -22,8 +22,12 @@ module ActionSmser
     def status=(stat, skip_log = false)
       self[:status] = stat
       self.status_updated_at = Time.now
+      add_log("#{Time.now.to_s(:db)}: #{stat}") unless skip_log
+    end
+
+    def add_log(str)
       self.log = "" if self.log.nil?
-      self.log += "#{Time.now.to_s(:db)}: #{stat}\n" if !skip_log
+      self.log += "#{str}\n"
     end
 
   end

@@ -45,8 +45,4 @@ class ActionSmser::SimpleHttpTest < ActiveSupport::TestCase
     assert_equal "id_6666", @dr.msg_id, "id wrong"
   end
 
-  # There are better frameworks for testing http requests
-  # http://railscasts.com/episodes/276-testing-time-web-requests
-  # https://github.com/chrisk/fakeweb
-
 end

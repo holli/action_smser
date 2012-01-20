@@ -9,6 +9,7 @@ module ActionSmser
 
   mattr_accessor :delivery_options
   self.delivery_options= {:delivery_method => :test_array, :save_delivery_reports => false}
+  self.delivery_options[:gateway_commit] = {}
 
   class Logger
     def self.info(str)

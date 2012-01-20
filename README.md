@@ -83,6 +83,22 @@ end
 
 ```
 
+**Nexmo** (http://nexmo.com/) is supported also.
+
+```
+  ActionSmser.delivery_options[:delivery_method] = :nexmo
+  ActionSmser.delivery_options[:nexmo] = {
+      :username => 'key', :password => "password"
+  }
+
+  # set callback url to nexmo http://localhost:3000/action_smser/delivery_reports/gateway_commit/nexmo
+  ActionSmser.delivery_options[:gateway_commit]['nexmo'] = ActionSmser::DeliveryMethods::Nexmo
+
+```
+
+If you add other common gateways to this framework, plz generate tests and send us a patch.
+
+
 ## Delivery reports
 
 Gem handles collecting and analysing of delivery reports. This enables you to make sure that your gateway works.
@@ -133,8 +149,7 @@ ActionSmser.delivery_options[:admin_access] = ActionSmserConfigExample
 # Parser is used with urls like
 # /action_smser/delivery_reports/gateway_commit/test_gateway
 # where 'test_gateway' is the part that is used for locating right parser.
-ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => ActionSmserConfigExample}
-
+ActionSmser.delivery_options[:gateway_commit]['test_gateway'] = ActionSmserConfigExample
 
 ```
 

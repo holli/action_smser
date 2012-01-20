@@ -97,9 +97,13 @@ class ActionSmser::Base
 
   # Most of the gateways want escaped and ISO encoded messages
   # Also make sure that its max 500 chars long
-  def body_encoded_escaped
+  def body_encoded_escaped(to = 'ISO-8859-15//TRANSLIT//IGNORE')
     msg = body.first(500)
-    CGI.escape(Iconv.iconv('ISO-8859-15//TRANSLIT//IGNORE', 'utf-8', msg).first.to_s)
+    CGI.escape(Iconv.iconv(to, 'utf-8', msg).first.to_s)
+  end
+
+  def body_escaped
+    CGI.escape(body.to_s.first(500))
   end
 
   # make sure that to is an array and remove leading '+' or '0' chars
