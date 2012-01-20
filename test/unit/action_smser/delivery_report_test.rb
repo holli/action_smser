@@ -87,6 +87,8 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
 
     assert_equal @sender, @dr_resent.from, "from info wrong"
     assert_equal "#{@sms.sms_type}_resent", @dr_resent.sms_type
+
+    assert_equal @dr.id, @dr_resent.re_delivery_of_delivery_report_id, "should set new reports re_delivery_of_delivery_report_id"
   end
 
 

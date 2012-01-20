@@ -4,7 +4,7 @@ module ActionSmser
     def self.build_from_sms(sms, to, msg_id)
       @delivery_report = self.new
 
-      [:from, :body, :sms_type].each do |var|
+      [:from, :body, :sms_type, :re_delivery_of_delivery_report_id].each do |var|
         @delivery_report.send("#{var}=", sms.send(var))
       end
       @delivery_report.to = to
@@ -45,7 +45,7 @@ module ActionSmser
       
       sms_new = self.to_sms
       sms_new.sms_type = "#{sms_new.sms_type}_resent"
-      sms_new.resent_of_delivery_report_id = self.id
+      sms_new.re_delivery_of_delivery_report_id = self.id
 
       unless gateway == :default
         sms_new.delivery_options[:delivery_method] = gateway

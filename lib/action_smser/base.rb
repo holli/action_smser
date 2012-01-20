@@ -40,7 +40,7 @@ class ActionSmser::Base
   ##################################################################
   ## INSTANCE METHODS
 
-  attr_accessor :body, :to, :from, :sms_type, :resent_of_delivery_report_id
+  attr_accessor :body, :to, :from, :sms_type, :re_delivery_of_delivery_report_id
 
   # Initialized to duplicate of ActionSmser.delivery_options
   attr_accessor :delivery_options
