@@ -44,11 +44,17 @@ module ActionSmser
       end
     end
 
+
     before_filter :admin_access_only, :except => :gateway_commit
 
     def index
 
     end
+
+    def list
+      
+    end
+
 
     def admin_access_only
       if !ActionSmser.delivery_options[:admin_access].blank? && ActionSmser.delivery_options[:admin_access].send(:admin_access, self)

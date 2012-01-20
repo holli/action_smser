@@ -14,28 +14,53 @@ time_span = case params['time_span'].to_s.downcase
   else
     1.week.ago..10.minutes.ago
   end
+
+  ar_timespan = ActionSmser::DeliveryReport.where(:created_at => time_span)
+
+  ar_gateway = ar_timespan
+  ar_gateway = ar_gateway.where(:gateway => params[:gateway]) if (params[:gateway] && params[:gateway].to_s != 'all')
+
 %>
 
 
-<h1>Delivery Reports Summary for <%= params['time_span'] %></h1>
+<h1>Delivery Reports Summary for <%= params['time_span'] %> <%= "for #{params[:gateway]}" unless params[:gateway].blank? %></h1>
 
 <p>
 Show summary:
-<%= link_to 'Last 24 hours', delivery_reports_path(:time_span => 'Last 24 Hours') %>,
-<%= link_to '24 hours before that', delivery_reports_path(:time_span => 'Previous 24 Hours') %>,
-<%= link_to 'Last week', delivery_reports_path(:time_span => 'Last Week') %>,
-<%= link_to 'Week before that', delivery_reports_path(:time_span => 'Previous Week') %> or
-<%= link_to 'Last month', delivery_reports_path(:time_span => 'Last Month') %>.
+<%= link_to 'Last 24 hours', delivery_reports_path(:time_span => 'Last 24 Hours', :gateway => params[:gateway]) %>,
+<%= link_to '24 hours before that', delivery_reports_path(:time_span => 'Previous 24 Hours', :gateway => params[:gateway]) %>,
+<%= link_to 'Last week', delivery_reports_path(:time_span => 'Last Week', :gateway => params[:gateway]) %>,
+<%= link_to 'Week before that', delivery_reports_path(:time_span => 'Previous Week', :gateway => params[:gateway]) %> or
+<%= link_to 'Last month', delivery_reports_path(:time_span => 'Last Month', :gateway => params[:gateway]) %>.
 </p>
 
-<h2>Delivered Within (hour:min:sec)</h2>
+<h2>Select gateway</h2>
 
-<%
-  ar = ActionSmser::DeliveryReport.where(:created_at => time_span)
-  ar_delivered = ar.where(:status => 'delivered')
-  total = ar.count
-  total_delivered = ar_delivered.count
-%>
+<ul>
+  <li>
+    <strong>
+        <%= link_to('all', delivery_reports_path(:time_span => params[:time_span]) ) %>
+    </strong>
+    &nbsp;&nbsp;
+    (you can select only gateways that have messages in this period)
+  </li>
+  <%
+     total = ar_timespan.count
+     grouped_by_status = ar_timespan.group(:gateway).count.each do |key, val| %>
+    <li>
+      <strong>
+        <%= link_to(key, delivery_reports_path(:time_span => params[:time_span], :gateway => key) ) %>
+      </strong>
+      &nbsp;&nbsp;
+      <%= val %> sms
+      &nbsp;&nbsp;
+      (<strong><%= number_to_percentage(100.0 * val / total, :precision => 2) %></strong>)
+    </li>
+  <% end %>
+</ul>
+
+
+<h2>Delivered Within (hour:min:sec)</h2>
 
 <% if ActiveRecord::Base.connection.adapter_name.downcase.to_s.include?("mysql") %>
 
@@ -47,6 +72,10 @@ Show summary:
       <th>% of delivered sms</th>
     </tr>
 
+    <% ar_delivered = ar_gateway.where(:status => 'delivered')
+       total = ar_gateway.count
+       total_delivered = ar_delivered.count
+    %>
     <% ["00:00:30", "00:01:00", "00:02:00", "00:10:00", "00:30:00", "00:90:00", "24:00:00", "48:00:00"].each do |time| %>
       <% dev_count = ar_delivered.where('TIMEDIFF(status_updated_at, created_at) < ?', time).count %>
       <tr>
@@ -66,9 +95,8 @@ Show summary:
 <h2>DeliveryReport Statuses</h2>
 <ul>
 <%
-   quest = ActionSmser::DeliveryReport.where(:created_at => time_span)
-   total = quest.count
-   grouped_by_status = quest.group(:status).count.each do |key, val| %>
+   total = ar_gateway.count
+   grouped_by_status = ar_gateway.group(:status).count.each do |key, val| %>
 
     <li>
       <strong><%= key %></strong>:
@@ -91,9 +119,8 @@ Show summary:
   </tr>
 
 <%
-   quest = ActionSmser::DeliveryReport.where(:created_at => time_span)
-   total = quest.count
-   grouped_by_status = quest.group(:sms_type).count.each do |key, val| %>
+   total = ar_gateway.count
+   grouped_by_status = ar_gateway.group(:sms_type).count.each do |key, val| %>
    <tr>
      <td><strong><%= key %></strong></td>
      <td><%= val %></td>
@@ -101,49 +128,6 @@ Show summary:
      <td><%= sms_count = ActionSmser::DeliveryReport.where(:created_at => time_span).where(:sms_type => key).where(:status => 'delivered').count %></td>
      <td><strong><%= number_to_percentage(100.0 * sms_count / val, :precision => 2) %></strong></td>
    </tr>
-<% end %>
-</table>
-
-
-<hr>
-
-<% items_within_page = 20 %>
-<h1 id="delivery_reports_list"><%= items_within_page %> delivery_reports ordered by created_at</h1>
-
-<%
-offset = params[:offset].to_i
-offset = 0 if offset < -0
-%>
-
-<p>
-  <strong>List offset: <%= offset %>.</strong>
-  Add
-  <%= link_to("- #{items_within_page}",  delivery_reports_path(:offset => offset-items_within_page, :anchor => 'delivery_reports_list')) unless offset == 0 %>
-  <%= link_to "+ #{items_within_page}",  delivery_reports_path(:offset => offset+items_within_page, :anchor => 'delivery_reports_list') %>
-  to offset
-</p>
-
-<table style="margin-top: 20px;">
-  <tr>
-    <th>Created_at</th>
-    <th>Msg id</th>
-    <th>Status</th>
-    <th>Status updated at</th>
-    <th>Recipient</th>
-    <th>Sender</th>
-    <th>Text body</th>
-  </tr>
-
-<% ActionSmser::DeliveryReport.order('created_at DESC').offset(offset).first(items_within_page).each do |delivery_report| %>
-  <tr>
-    <td style="white-space: nowrap;"><%= delivery_report.created_at %></td>
-    <td><%= delivery_report.msg_id %></td>
-    <td><%= delivery_report.status %></td>
-    <td style="white-space: nowrap;"><%= delivery_report.status_updated_at %></td>
-    <td><%= delivery_report.to %></td>
-    <td><%= delivery_report.from %></td>
-    <td><%= delivery_report.body %></td>
-  </tr>
 <% end %>
 </table>
 

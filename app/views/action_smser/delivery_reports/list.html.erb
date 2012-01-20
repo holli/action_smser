@@ -1,0 +1,46 @@
+
+<% items_within_page = 20 %>
+<h1 id="delivery_reports_list"><%= items_within_page %> delivery_reports ordered by created_at</h1>
+
+<%
+offset = params[:offset].to_i
+offset = 0 if offset < -0
+%>
+
+<p>
+  <strong>List offset: <%= offset %>.</strong>
+  Add
+  <%= link_to("- #{items_within_page}",  list_delivery_reports_path(:offset => offset-items_within_page)) unless offset == 0 %>
+  <%= link_to "+ #{items_within_page}",  list_delivery_reports_path(:offset => offset+items_within_page) %>
+  to offset
+</p>
+
+<table style="margin-top: 20px; font-size: 10px;">
+  <tr>
+    <th>Id</th>
+    <th>Created_at</th>
+    <th>Msg id</th>
+    <th>Gateway</th>
+    <th>Status</th>
+    <th>Status updated at</th>
+    <th>Recipient</th>
+    <th>Sender</th>
+    <th>Text body</th>
+  </tr>
+
+<% ActionSmser::DeliveryReport.order('created_at DESC').offset(offset).first(items_within_page).each do |delivery_report| %>
+  <tr>
+    <td style="white-space: nowrap;"><%= delivery_report.id %></td>
+    <td style="white-space: nowrap;"><%= delivery_report.created_at %></td>
+    <td><%= delivery_report.msg_id %></td>
+    <td><%= delivery_report.gateway %></td>
+    <td><%= delivery_report.status %></td>
+    <td style="white-space: nowrap;"><%= delivery_report.status_updated_at %></td>
+    <td><%= delivery_report.to %></td>
+    <td><%= delivery_report.from %></td>
+    <td><%= delivery_report.body %></td>
+  </tr>
+<% end %>
+</table>
+
+

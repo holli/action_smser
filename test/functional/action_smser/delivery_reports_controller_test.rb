@@ -89,16 +89,6 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
     assert_template nil
   end
 
-  test "index with always enabled admin" do
-    2.times do
-      ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
-    end
-    ActionSmser::DeliveryReportsController.any_instance.stubs(:admin_access_only).returns(true)
-    get 'index', :use_route => :action_smser
-    assert_response :success
-    assert_template :index
-  end
-
   test "index with admin_access lambda with right login info" do
     default = ActionSmser.delivery_options[:admin_access]
     ActionSmser.delivery_options[:admin_access] = SmsTestSetup
@@ -114,5 +104,28 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
     ActionSmser.delivery_options[:admin_access] = default
 
   end
+
+
+  test "index with always enabled admin" do
+    2.times do
+      ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
+    end
+    ActionSmser::DeliveryReportsController.any_instance.stubs(:admin_access_only).returns(true)
+    get 'index', :use_route => :action_smser
+    assert_response :success
+    assert_template :index
+  end
+
+  test "list with always enabled admin" do
+    2.times do
+      ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
+    end
+    ActionSmser::DeliveryReportsController.any_instance.stubs(:admin_access_only).returns(true)
+    get 'list', :use_route => :action_smser
+    assert_response :success
+    assert_template :list
+  end
+
+
 
 end
