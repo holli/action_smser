@@ -1,6 +1,6 @@
 # ActionSmser
 
-Simple way to use SMS (Short Message Service) in the same way as ActionMailer (ActionSmser == ActionMailer).
+ActionSmser == SMS && ActionMailer. Simple way to use SMS (Short Message Service) in the same way as ActionMailer.
 Includes also delivery reports and easy way to add custom gateways. See examples below.
 
 [<img src="https://secure.travis-ci.org/holli/action_smser.png" />](http://travis-ci.org/holli/action_smser)
