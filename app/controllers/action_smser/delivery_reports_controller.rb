@@ -37,8 +37,12 @@ module ActionSmser
           end
         end
 
-        ActionSmser.delivery_options[:gateway_commit_observers].each do |observer|
-          observer.after_gateway_commit(dr_array)
+        begin
+          ActionSmser.delivery_options[:gateway_commit_observers].each do |observer|
+            observer.after_gateway_commit(dr_array)
+          end
+        rescue Exception => e
+          ActionSmser::Logger.error("Problem with gateway_commit_observers: #{e}")
         end
 
 

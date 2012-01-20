@@ -23,6 +23,9 @@ module ActionSmser
     def self.warn(str)
       Rails.logger.warn("ActionSmser: #{str}")
     end
+    def self.error(str)
+      Rails.logger.error("ActionSmser: #{str}")
+    end
   end
 
 end
