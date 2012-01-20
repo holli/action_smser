@@ -83,14 +83,14 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
     assert result.second.is_a?(Array)
     assert result.second.first.is_a?(ActionSmser::DeliveryReport)
 
-    @dr_resent = ActionSmser::DeliveryReport.last
+    @dr_redelivery = ActionSmser::DeliveryReport.last
 
-    assert_equal @sender, @dr_resent.from, "from info wrong"
-    assert_equal "#{@sms.sms_type}_resent", @dr_resent.sms_type
+    assert_equal @sender, @dr_redelivery.from, "from info wrong"
+    assert_equal "#{@sms.sms_type}.re_delivery", @dr_redelivery.sms_type
 
-    assert_equal @dr.id, @dr_resent.re_delivery_of_delivery_report_id, "should set new reports re_delivery_of_delivery_report_id"
-    assert_equal @dr.re_deliveries.first, @dr_resent
-    assert_equal @dr, @dr_resent.re_delivery_of
+    assert_equal @dr.id, @dr_redelivery.re_delivery_of_delivery_report_id, "should set new reports re_delivery_of_delivery_report_id"
+    assert_equal @dr.re_deliveries.first, @dr_redelivery
+    assert_equal @dr, @dr_redelivery.re_delivery_of
   end
 
 

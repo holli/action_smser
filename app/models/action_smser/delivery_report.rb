@@ -49,7 +49,7 @@ module ActionSmser
       self.update_attribute(:re_delivered, true)
       
       sms_new = self.to_sms
-      sms_new.sms_type = "#{sms_new.sms_type}_resent"
+      sms_new.sms_type = "#{sms_new.sms_type}.re_delivery"
       sms_new.re_delivery_of_delivery_report_id = self.id
 
       unless gateway == :default
