@@ -7,9 +7,14 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
       sms(:to => to, :from => from, :body => body)
     end
 
-    def after_delivery(result)
-      puts "generic delivery observer, mock this"
+    def before_delivery
+      return true
     end
+
+    def after_delivery(result)
+      return true
+    end
+
   end
 
   setup do
@@ -65,7 +70,12 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
     assert_equal ActionSmser::DeliveryMethods::TestArray, @sms.delivery_method
   end
 
-  test "after delivery it should call delivery_observer if it's present" do
+  test "before delivery should be called if it's present" do
+    @sms.expects(:before_delivery).once
+    assert @sms.deliver
+  end
+
+  test "after delivery should be called if it's present" do
     @sms.expects(:after_delivery).once
     assert @sms.deliver
   end

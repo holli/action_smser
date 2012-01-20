@@ -141,7 +141,6 @@ class ActionSmserConfigExample
   end
 end
 
-
 # This is simple proc that is used in a before filter, if it returns true it allows access to
 # http://localhost.inv:3000/action_smser/delivery_reports/ with infos about delivery reports
 ActionSmser.delivery_options[:admin_access] = ActionSmserConfigExample
@@ -171,11 +170,31 @@ class TestSms < ActionSmser::Base
     sms(:to => to, :from => from, :body => str)
   end
 
+  def before_delivery()
+    puts "Called just before delivery"
+  end
+
   def after_delivery(response_from_delivery_method)
     puts "Done with delivery"
   end
 end
 ```
+
+Gateway committed status updates can also have observers
+
+```
+in /config/initializers/active_smser.rb
+
+class ActionSmserConfigGatewayObserver
+  def self.after_gateway_commit(delivery_reports)
+    puts delivery_reports.inspect
+  end
+end
+
+ActionSmser.gateway_commit_observer_add(ActionSmserConfigGatewayObserver)
+
+```
+
 
 ## Testing
 

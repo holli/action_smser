@@ -11,10 +11,11 @@ module ActionSmser
 
         ActionSmser::Logger.info("Gateway_commit found parser for gateway: #{params['gateway']}")
 
-        dr_array = ActionSmser.delivery_options[:gateway_commit][params['gateway']].send(:process_delivery_report, params)
+        dr_var_array = ActionSmser.delivery_options[:gateway_commit][params['gateway']].send(:process_delivery_report, params)
+        dr_array = []
 
-        if !dr_array.blank?
-          dr_array.each do |dr_update|
+        if !dr_var_array.blank?
+          dr_var_array.each do |dr_update|
             msg_id = dr_update["msg_id"]
             dr = ActionSmser::DeliveryReport.where(:msg_id => msg_id).first
 
@@ -23,9 +24,9 @@ module ActionSmser
                 dr.send("#{key}=", value) if dr.attribute_names.include?(key.to_s)
               end
 
-
               if dr.save
                 updated_count += 1
+                dr_array << dr
                 ActionSmser::Logger.info("Gateway_commit updated item with id: #{msg_id}, params: #{dr_update.inspect}")
               else
                 ActionSmser::Logger.info("Gateway_commit problem updating item with id: #{msg_id}, params: #{dr_update.inspect}")
@@ -35,6 +36,12 @@ module ActionSmser
             end
           end
         end
+
+        ActionSmser.delivery_options[:gateway_commit_observers].each do |observer|
+          observer.after_gateway_commit(dr_array)
+        end
+
+
       end
 
       if updated_count > 0

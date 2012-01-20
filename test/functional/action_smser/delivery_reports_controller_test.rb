@@ -23,6 +23,15 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
       return processable_array
     end
+
+    def self.after_gateway_commit(delivery_reports)
+      return true
+    end
+
+  end
+
+  setup do
+    ActionSmser.delivery_options[:gateway_commit_observers] = []
   end
 
   test "gateway_commit with existing dr" do
@@ -30,13 +39,16 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
     @dr = ActionSmser::DeliveryReport.create(:msg_id => @msg_id, :status => 'ORIGINAL_STATUS')
 
     ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
+    ActionSmser.gateway_commit_observer_add(SmsTestSetup)
+
+    SmsTestSetup.expects(:after_gateway_commit).once.with(){|var| var.is_a?(Array) && var.first.is_a?(ActionSmser::DeliveryReport)}
 
     get 'gateway_commit', :use_route => :action_smser, :gateway => 'test_gateway',
         "DeliveryReport"=>{"message"=>{"id"=>@msg_id, "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
 
 
     assert_response :success
-    assert @response.body.downcase.include?("update"), "should have responed about saving"
+    assert @response.body.downcase.include?("update"), "should have responsed about saving"
     @dr.reload
     assert_equal "DELIVERED", @dr.status
   end

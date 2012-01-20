@@ -84,6 +84,8 @@ class ActionSmser::Base
 
 
   def deliver
+    self.send(:before_delivery) if self.respond_to?(:before_delivery)
+
     return false unless valid?
 
     logger.info "Sending sms (#{self.to_s})"

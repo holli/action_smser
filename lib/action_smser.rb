@@ -10,6 +10,11 @@ module ActionSmser
   mattr_accessor :delivery_options
   self.delivery_options= {:delivery_method => :test_array, :save_delivery_reports => false}
   self.delivery_options[:gateway_commit] = {}
+  self.delivery_options[:gateway_commit_observers] = []
+
+  def self.gateway_commit_observer_add(observer_class)
+    self.delivery_options[:gateway_commit_observers].push(observer_class)
+  end
 
   class Logger
     def self.info(str)
