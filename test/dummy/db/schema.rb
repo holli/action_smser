@@ -10,19 +10,6 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120102215215) do
-
-  create_table "action_smser_delivery_reports", :force => true do |t|
-    t.string   "msg_id"
-    t.string   "status"
-    t.datetime "status_updated_at"
-    t.string   "sms_type"
-    t.text     "log"
-    t.string   "to"
-    t.string   "from"
-    t.string   "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(:version => 0) do
 
 end

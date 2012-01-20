@@ -45,6 +45,7 @@ class ActionSmser::NexmoTest < ActiveSupport::TestCase
     assert_equal @delivery_reports_count + 2, ActionSmser::DeliveryReport.count, "should have saved 2 delivery reports"
 
     @dr1 = @sms_delivery.first
+    assert_equal "nexmo", @dr1.gateway
     assert_equal "555123555", @dr1.to, "receiver wrong"
     assert_equal "LOCAL_SENT", @dr1.status
 

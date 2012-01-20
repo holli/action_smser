@@ -10,6 +10,7 @@ module ActionSmser
       @delivery_report.to = to
       @delivery_report.msg_id = msg_id
       @delivery_report.status = "LOCAL_SENT"
+      @delivery_report.gateway = sms.delivery_options[:delivery_method].to_s
       @delivery_report
     end
 

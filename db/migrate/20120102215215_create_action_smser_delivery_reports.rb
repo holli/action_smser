@@ -11,6 +11,8 @@ class CreateActionSmserDeliveryReports < ActiveRecord::Migration
       t.string :from
       t.string :body
 
+      t.string :gateway
+
       t.timestamps
     end
 
