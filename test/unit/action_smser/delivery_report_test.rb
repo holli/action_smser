@@ -73,7 +73,7 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
 
     @dr = ActionSmser::DeliveryReport.find(@dr.id)
 
-    result = @dr.re_deliver(:test_array)
+    result = @dr.re_deliver({:delivery_method => :test_array, :delivery_opt_merge => :found})
 
     assert @dr.re_delivered
     assert ActionSmser::DeliveryReport.find(@dr.id).re_delivered?
@@ -82,6 +82,7 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
     assert result.first.is_a?(ActionSmser::Base)
     assert result.second.is_a?(Array)
     assert result.second.first.is_a?(ActionSmser::DeliveryReport)
+    assert_equal :found, result.first.delivery_options[:delivery_opt_merge]
 
     @dr_redelivery = ActionSmser::DeliveryReport.last
 
