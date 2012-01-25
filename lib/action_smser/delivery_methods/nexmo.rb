@@ -25,7 +25,7 @@ module ActionSmser::DeliveryMethods
       delivery_reports = []
 
       sms.to_numbers_array.each do |to|
-        #sms.to = to
+        sms.to = to
         deliver_path = self.deliver_path(sms, options)
         response = self.deliver_http_request(sms, options, deliver_path)
 
