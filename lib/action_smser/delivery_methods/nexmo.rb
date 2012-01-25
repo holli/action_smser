@@ -18,7 +18,7 @@ module ActionSmser::DeliveryMethods
       options[:use_ssl] = true
       options[:status_report_req] ||= sms.delivery_options[:save_delivery_reports]
 
-      logger.info("Nexmo delivery with #{sms.to_numbers_array} recipients")
+      logger.info("Nexmo delivery with #{sms.to_numbers_array.count} recipients")
       to_original = sms.to
 
       sms.delivery_info = []
