@@ -1,23 +1,33 @@
 
 <%
-params['time_span'] ||= 'Last Month'
+  params['time_span'] ||= 'Last week'
+  params['redeliveries'] ||= 'Include normally'
 
-time_span = case params['time_span'].to_s.downcase
-  when 'previous week'
-    2.weeks.ago..1.week.ago
-  when 'last month'
-    1.month.ago..10.minutes.ago
-  when 'last 24 hours'
-    1.day.ago..10.minutes.ago
-  when 'previous 24 hours'
-    2.days.ago..1.day.ago
-  else
-    1.week.ago..10.minutes.ago
-  end
+  time_span = case params['time_span'].to_s.downcase
+    when 'previous week'
+      2.weeks.ago..1.week.ago
+    when 'last month'
+      1.month.ago..10.minutes.ago
+    when 'last 24 hours'
+      1.day.ago..10.minutes.ago
+    when 'previous 24 hours'
+      2.days.ago..1.day.ago
+    else
+      1.week.ago..10.minutes.ago
+    end
 
   ar_timespan = ActionSmser::DeliveryReport.where(:created_at => time_span)
 
-  ar_gateway = ar_timespan
+  ar_redeliveries = case params['redeliveries'].to_s.downcase
+    when 'ignore redeliveries'
+      ar_timespan.where("re_delivery_of_delivery_report_id IS NULL")
+    when 'only redeliveries'
+      ar_timespan.where("re_delivery_of_delivery_report_id IS NOT NULL")
+    else
+      ar_timespan
+    end
+
+  ar_gateway = ar_redeliveries
   ar_gateway = ar_gateway.where(:gateway => params[:gateway]) if (params[:gateway] && params[:gateway].to_s != 'all')
 
 %>
@@ -25,36 +35,41 @@ time_span = case params['time_span'].to_s.downcase
 
 <h1>Delivery Reports Summary for <%= params['time_span'] %> <%= "for #{params[:gateway]}" unless params[:gateway].blank? %></h1>
 
-<p>
-Show summary:
-<%= link_to 'Last 24 hours', delivery_reports_path(:time_span => 'Last 24 Hours', :gateway => params[:gateway]) %>,
-<%= link_to '24 hours before that', delivery_reports_path(:time_span => 'Previous 24 Hours', :gateway => params[:gateway]) %>,
-<%= link_to 'Last week', delivery_reports_path(:time_span => 'Last Week', :gateway => params[:gateway]) %>,
-<%= link_to 'Week before that', delivery_reports_path(:time_span => 'Previous Week', :gateway => params[:gateway]) %> or
-<%= link_to 'Last month', delivery_reports_path(:time_span => 'Last Month', :gateway => params[:gateway]) %>.
+<p class="selection_links">
+  <strong>Show summary:</strong>
+  <% ['Last 24 hours', '24 hours before that', 'Last week', 'Week before that', 'Last month'].each do |key| %>
+    <%= link_to key, dr_summary_url(:time_span => key), :class => (key == params['time_span'] ? 'selected' : 'not_selected') %>
+  <% end %>
+</p>
+
+<p class="selection_links">
+  <strong>Redeliveries:</strong>
+  
+  <% ['Include normally', 'Ignore redeliveries', 'Only redeliveries'].each do |key| %>
+    <%= link_to key, dr_summary_url(:redeliveries => key), :class => (key == params['redeliveries'] ? 'selected' : 'not_selected') %>
+  <% end %>
 </p>
 
 <h2>Select gateway</h2>
-
-<ul>
+<ul class="selection_links" style="width: 500px;">
   <li>
     <strong>
-        <%= link_to('all', delivery_reports_path(:time_span => params[:time_span]) ) %>
+        <%= link_to('all', dr_summary_url(:gateway => nil) ) %>
     </strong>
+    &nbsp;&nbsp;
+    <%= total = ar_redeliveries.count %> sms
     &nbsp;&nbsp;
     (you can select only gateways that have messages in this period)
   </li>
-  <%
-     total = ar_timespan.count
-     grouped_by_status = ar_timespan.group(:gateway).count.each do |key, val| %>
-    <li>
-      <strong>
-        <%= link_to(key, delivery_reports_path(:time_span => params[:time_span], :gateway => key) ) %>
-      </strong>
+  <% ar_redeliveries.group(:gateway).count.each do |key, val| %>
+    <li class="<%= (key == params['gateway'] ? 'selected' : 'not_selected') -%>">
+      <%= link_to(key, dr_summary_url(:gateway => key) ) %>
+
       &nbsp;&nbsp;
       <%= val %> sms
       &nbsp;&nbsp;
       (<strong><%= number_to_percentage(100.0 * val / total, :precision => 2) %></strong>)
+      <% if params[:gateway] == key %><strong style="padding-left: 50px;">(selected)</strong><% end %>
     </li>
   <% end %>
 </ul>
@@ -125,7 +140,7 @@ Show summary:
      <td><strong><%= key %></strong></td>
      <td><%= val %></td>
      <td><strong><%= number_to_percentage(100.0 * val / total, :precision => 2) %></strong></td>
-     <td><%= sms_count = ActionSmser::DeliveryReport.where(:created_at => time_span).where(:sms_type => key).where(:status => 'delivered').count %></td>
+     <td><%= sms_count = ar_gateway.where(:sms_type => key).where(:status => 'delivered').count %></td>
      <td><strong><%= number_to_percentage(100.0 * sms_count / val, :precision => 2) %></strong></td>
    </tr>
 <% end %>
