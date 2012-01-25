@@ -53,7 +53,7 @@ module ActionSmser::DeliveryMethods
     end
 
     def self.deliver_path(sms, to, options)
-      "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{sms.to}&text=#{sms.body_escaped}"
+      "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{to}&text=#{sms.body_escaped}"
     end
 
     # Callback message status handling
