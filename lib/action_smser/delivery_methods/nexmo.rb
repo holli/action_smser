@@ -18,35 +18,39 @@ module ActionSmser::DeliveryMethods
       options[:use_ssl] = true
       options[:status_report_req] ||= sms.delivery_options[:save_delivery_reports]
 
-      deliver_path = self.deliver_path(sms, options)
+      logger.info("Nexmo delivery with #{sms.to_numbers_array} recipients")
+      to_original = sms.to
 
-      response = self.deliver_http_request(sms, options, deliver_path)
+      sms.delivery_info = []
+      delivery_reports = []
 
-      logger.info "SimpleHttp delivery ||| #{deliver_path} ||| #{response.inspect}"
-      logger.info response.body if !response.blank?
-      sms.delivery_info = response
+      sms.to_numbers_array.each do |to|
+        #sms.to = to
+        deliver_path = self.deliver_path(sms, options)
+        response = self.deliver_http_request(sms, options, deliver_path)
 
-      # Results include sms_id or error code in each line
+        logger.info "Nexmo delivery http ||| #{deliver_path} ||| #{response.inspect}"
+        logger.info response.body if !response.blank?
 
-      results = JSON.parse(response.body)["messages"]
-      if sms.delivery_options[:save_delivery_reports]
-        delivery_reports = []
-        sms.to_numbers_array.each_with_index do |to, i|
-          result = results[i]
+        sms.delivery_info.push(response)
+
+        result = JSON.parse(response.body)["messages"].first
+
+        # Results include sms_id or error code in each line
+        if sms.delivery_options[:save_delivery_reports]
           dr = ActionSmser::DeliveryReport.build_from_sms(sms, to, result["message-id"])
           if result["status"].to_i > 0
             dr.status = "SENT_ERROR_#{result["status"]}"
             dr.log += "nexmo_error: #{result["error-text"]}"
           end
           dr.save
-
           delivery_reports << dr
         end
-        return delivery_reports
-      else
-        return results
       end
 
+      sms.to = to_original
+
+      sms.delivery_options[:save_delivery_reports] ? delivery_reports : sms.delivery_info
     end
 
     def self.deliver_path(sms, options)

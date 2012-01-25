@@ -18,24 +18,23 @@ class ActionSmser::NexmoTest < ActiveSupport::TestCase
     @sms.delivery_options[:nexmo] = {:username => 'user', :password => 'pass'}
     assert_equal ActionSmser::DeliveryMethods::Nexmo, @sms.delivery_method, "cant run tests, wrong delivery method"
 
-    http_mock = stub(
+    @http_mock = stub(
         :body => '{"message-count":"1","messages":[{"message-price":"0.02500000","status":"0","message-id":"0778DE88","remaining-balance":"1.77500000"}]}')
-    ActionSmser::DeliveryMethods::Nexmo.stubs(:deliver_http_request).returns(http_mock)
+    ActionSmser::DeliveryMethods::Nexmo.stubs(:deliver_http_request).returns(@http_mock)
   end
 
   test "should be able to deliver" do
+    ActionSmser::DeliveryMethods::Nexmo.expects(:deliver_http_request).twice().returns(@http_mock)
     @sms_delivery = @sms.deliver
     assert @sms_delivery
-    assert_equal 1, @sms_delivery.count
+    assert_equal 2, @sms_delivery.count
   end
 
   test "with saving delivery_reports" do
     @sms.delivery_options[:save_delivery_reports] = true
     @delivery_reports_count = ActionSmser::DeliveryReport.count
 
-    http_mock = stub(
-        :body => '{"message-count":"1","messages":[{"message-price":"0.02500000","status":"0","message-id":"0778DE88","remaining-balance":"1.77500000"},{"error-text":"Message rejected by upstream path","message-price":"0.02500000","status":"6","message-id":"0778D302","remaining-balance":"1.87500000"}]}')
-    ActionSmser::DeliveryMethods::Nexmo.stubs(:deliver_http_request).returns(http_mock)
+    ActionSmser::DeliveryMethods::Nexmo.stubs(:deliver_http_request).returns(@http_mock)
 
     @sms_delivery = @sms.deliver
 
@@ -51,8 +50,6 @@ class ActionSmser::NexmoTest < ActiveSupport::TestCase
 
     @dr2 = @sms_delivery.last
     assert_equal "123555123", @dr2.to, "receiver wrong"
-    assert_equal "0778D302", @dr2.msg_id, "id wrong"
-    assert_equal "SENT_ERROR_6", @dr2.status
   end
 
   test "gateway process_delivery_report(params)" do
