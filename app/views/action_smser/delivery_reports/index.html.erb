@@ -4,13 +4,13 @@
   params['redeliveries'] ||= 'Include normally'
 
   time_span = case params['time_span'].to_s.downcase
-    when 'previous week'
+    when 'week before that'
       2.weeks.ago..1.week.ago
     when 'last month'
       1.month.ago..10.minutes.ago
     when 'last 24 hours'
       1.day.ago..10.minutes.ago
-    when 'previous 24 hours'
+    when '24 hours before that'
       2.days.ago..1.day.ago
     else
       1.week.ago..10.minutes.ago
@@ -33,7 +33,10 @@
 %>
 
 
-<h1>Delivery Reports Summary for <%= params['time_span'] %> <%= "for #{params[:gateway]}" unless params[:gateway].blank? %></h1>
+<h1>Delivery Reports Summary for
+  (<span style="font-size: smaller"><%= "#{time_span.first.to_s(:db)} => #{time_span.last.to_s(:db)}" %></span>)
+  <%= "for #{params[:gateway]}" unless params[:gateway].blank? %>
+</h1>
 
 <p class="selection_links">
   <strong>Show summary:</strong>
