@@ -12,10 +12,10 @@ module ActionSmser::DeliveryMethods
       logger.info "Delivering sms by https"
 
       options = sms.delivery_options[:nexmo] || {}
+      options = options.dup
 
       options[:server] = 'rest.nexmo.com'
       options[:use_ssl] = true
-      options[:ttl] ||= 60*1000
       options[:status_report_req] ||= sms.delivery_options[:save_delivery_reports]
 
       deliver_path = self.deliver_path(sms, options)
@@ -50,7 +50,7 @@ module ActionSmser::DeliveryMethods
     end
 
     def self.deliver_path(sms, options)
-      "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{options[:ttl]}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{sms.to_encoded}&text=#{sms.body_escaped}"
+      "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{sms.to_encoded}&text=#{sms.body_escaped}"
     end
 
     # Callback message status handling

@@ -8,7 +8,7 @@ require "action_smser/delivery_methods/nexmo"
 module ActionSmser
 
   mattr_accessor :delivery_options
-  self.delivery_options= {:delivery_method => :test_array, :save_delivery_reports => false}
+  self.delivery_options= {:delivery_method => :test_array, :save_delivery_reports => false, :default_ttl => (24*60*60) }
   self.delivery_options[:gateway_commit] = {}
   self.delivery_options[:gateway_commit_observers] = []
 

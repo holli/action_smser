@@ -43,7 +43,8 @@ module ActionSmser
       sms_new
     end
 
-    def re_deliver(changed_delivery_options = {})
+    # This updates re_delivered attribute for itself
+    def re_delivarable_sms(changed_delivery_options = {})
       ActionSmser::Logger.info("Re_delivering: #{self.inspect}")
       self.update_attribute(:re_delivered, true)
       
@@ -51,9 +52,7 @@ module ActionSmser
       sms_new.sms_type = "#{sms_new.sms_type}.re_delivery"
       sms_new.re_delivery_of_delivery_report_id = self.id
 
-      sms_new.delivery_options.merge!(changed_delivery_options)
-
-      [sms_new, sms_new.deliver]
+      sms_new
     end
 
   end

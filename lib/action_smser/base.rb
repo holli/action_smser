@@ -40,7 +40,7 @@ class ActionSmser::Base
   ##################################################################
   ## INSTANCE METHODS
 
-  attr_accessor :body, :to, :from, :sms_type, :re_delivery_of_delivery_report_id
+  attr_accessor :body, :to, :from, :sms_type, :re_delivery_of_delivery_report_id, :ttl
 
   # Initialized to duplicate of ActionSmser.delivery_options
   attr_accessor :delivery_options
@@ -129,6 +129,10 @@ class ActionSmser::Base
 
   def from_encoded
     from.to_s.gsub(/^(\+|0)/, "")
+  end
+
+  def ttl_to_i
+    ttl.blank? ? ActionSmser.delivery_options[:default_ttl] : ttl.to_i
   end
 
   def logger

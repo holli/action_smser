@@ -48,6 +48,15 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
     assert_equal 500, @sms.body_encoded_escaped.size
   end
 
+  test "ttl should be 24 hours by default" do
+    assert_equal 24.hours, @sms.ttl_to_i
+  end
+
+  test "should be able to change ttl" do
+    @sms.ttl = "60"
+    assert_equal 1.minute, @sms.ttl_to_i
+  end
+
   test "should be valid sms" do
     assert @sms.valid?
   end

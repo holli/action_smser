@@ -73,16 +73,15 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
 
     @dr = ActionSmser::DeliveryReport.find(@dr.id)
 
-    result = @dr.re_deliver({:delivery_method => :test_array, :delivery_opt_merge => :found})
+    re_delivarable_sms = @dr.re_delivarable_sms()
 
-    assert @dr.re_delivered
+    assert re_delivarable_sms
+    #assert re_delivarable_sms.is_a?(ActionSmser::Base)
     assert ActionSmser::DeliveryReport.find(@dr.id).re_delivered?
-
-    assert result.is_a?(Array)
-    assert result.first.is_a?(ActionSmser::Base)
-    assert result.second.is_a?(Array)
-    assert result.second.first.is_a?(ActionSmser::DeliveryReport)
-    assert_equal :found, result.first.delivery_options[:delivery_opt_merge]
+    
+    dr_result = re_delivarable_sms.deliver
+    assert dr_result.is_a?(Array)
+    assert dr_result.first.is_a?(ActionSmser::DeliveryReport)
 
     @dr_redelivery = ActionSmser::DeliveryReport.last
 
