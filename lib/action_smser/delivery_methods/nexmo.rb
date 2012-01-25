@@ -25,8 +25,7 @@ module ActionSmser::DeliveryMethods
       delivery_reports = []
 
       sms.to_numbers_array.each do |to|
-        sms.to = to
-        deliver_path = self.deliver_path(sms, options)
+        deliver_path = self.deliver_path(sms, to, options)
         response = self.deliver_http_request(sms, options, deliver_path)
 
         logger.info "Nexmo delivery http ||| #{deliver_path} ||| #{response.inspect}"
@@ -53,8 +52,8 @@ module ActionSmser::DeliveryMethods
       sms.delivery_options[:save_delivery_reports] ? delivery_reports : sms.delivery_info
     end
 
-    def self.deliver_path(sms, options)
-      "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{sms.to_encoded}&text=#{sms.body_escaped}"
+    def self.deliver_path(sms, to, options)
+      "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{sms.to}&text=#{sms.body_escaped}"
     end
 
     # Callback message status handling
