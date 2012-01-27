@@ -10,7 +10,7 @@ module ActionSmser::DeliveryMethods
   class SimpleHttp
     
     def self.deliver(sms, options = nil)
-      logger.info "Delivering sms by https"
+      logger.info "Delivering sms by #{self.name}"
 
       options = options ? options : sms.delivery_options[:simple_http]
       deliver_path = self.deliver_path(sms, options)

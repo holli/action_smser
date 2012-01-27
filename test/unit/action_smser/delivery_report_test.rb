@@ -76,7 +76,9 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
     re_delivarable_sms = @dr.re_delivarable_sms()
 
     assert re_delivarable_sms
-    #assert re_delivarable_sms.is_a?(ActionSmser::Base)
+    assert_equal "#{@dr.sms_type}.re_delivery", re_delivarable_sms.sms_type
+    assert_equal @dr.id, re_delivarable_sms.re_delivery_of_delivery_report_id
+
     assert ActionSmser::DeliveryReport.find(@dr.id).re_delivered?
     
     dr_result = re_delivarable_sms.deliver
