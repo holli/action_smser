@@ -47,6 +47,10 @@ class ActionSmser::Base
 
   # Delivery methods can use this to save data for debugging, e.g. http responses etc
   attr_accessor :delivery_info
+  attr_accessor :delivery_reports
+  def delivery_reports
+    @delivery_reports ||= []
+  end
 
   # Called from class.method_missing with own_sms_message when you call OwnMailer.own_sms_message
   def initialize(method_name = 'no_name_given', *args)

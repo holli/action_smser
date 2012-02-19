@@ -17,7 +17,7 @@ begin
 
         def initialize(sms, to)
           [:body, :from, :sms_type, :re_delivery_of_delivery_report_id, :ttl, :delivery_options].each do |attr|
-            self.send("#{attr}=", sms.send(attr))
+            self.send("#{attr}=", sms.send(attr).dup) unless sms.send(attr).nil?
           end
           self.send("to=", to)
           @valid = true

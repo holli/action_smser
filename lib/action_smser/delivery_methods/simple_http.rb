@@ -22,11 +22,10 @@ module ActionSmser::DeliveryMethods
 
       results = response.body.split("\n")
       if sms.delivery_options[:save_delivery_reports]
-        delivery_reports = []
         sms.to_numbers_array.each_with_index do |to, i|
-          delivery_reports << ActionSmser::DeliveryReport.create_from_sms(sms, to, results[i].to_s.strip)
+          sms.delivery_reports.push(ActionSmser::DeliveryReport.create_from_sms(sms, to, results[i].to_s.strip))
         end
-        return delivery_reports
+        return sms.delivery_reports
       else
         return results
       end

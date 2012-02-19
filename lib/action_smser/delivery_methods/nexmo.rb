@@ -17,7 +17,6 @@ module ActionSmser::DeliveryMethods
       options[:status_report_req] ||= sms.delivery_options[:save_delivery_reports]
 
       sms.delivery_info = []
-      delivery_reports = []
 
       sms.to_numbers_array.each do |to|
         deliver_path = self.deliver_path(sms, to, options)
@@ -38,11 +37,11 @@ module ActionSmser::DeliveryMethods
             dr.log += "nexmo_error: #{result["error-text"]}"
           end
           dr.save
-          delivery_reports << dr
+          sms.delivery_reports.push(dr)
         end
       end
 
-      sms.delivery_options[:save_delivery_reports] ? delivery_reports : sms.delivery_info
+      sms.delivery_options[:save_delivery_reports] ? sms.delivery_reports : sms.delivery_info
     end
 
     def self.deliver_path(sms, to, options)

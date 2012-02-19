@@ -36,10 +36,14 @@ class ActionSmser::DelayedJobTest < ActiveSupport::TestCase
   test "test that serializing is ok" do
     smsdj = ActionSmser::DeliveryMethods::DelayedJob::SmsDeliverJob.new(@sms, @sms.to_numbers_array.first)
 
-    [:body, :from, :sms_type, :re_delivery_of_delivery_report_id, :ttl, :delivery_options, :delivery_info].each do |var|
+    [:body, :from, :sms_type, :re_delivery_of_delivery_report_id, :ttl, :delivery_info].each do |var|
       assert_equal smsdj.send(var), @sms.send(var)
     end
 
+    assert smsdj.body.object_id != @sms.body.object_id, "It should make copy of all values, not use the same objects."
+
+    assert_equal smsdj.delivery_options, @sms.delivery_options.merge(:delivery_method => @sms.delivery_options[:delayed_job][:delivery_method])
+    
     assert_equal smsdj.to, @sms.to_numbers_array.first
 
     assert_equal :nexmo, smsdj.delivery_options[:delivery_method], "Should set the deliverymethod to nexmo"
