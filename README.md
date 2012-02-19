@@ -96,6 +96,16 @@ end
 
 ```
 
+**DelayedJob** (https://github.com/collectiveidea/delayed_job)
+
+```
+  # Sending can often take couple seconds and you might want to do it in the background so that user gets instant feedback.
+  # Need DelayedJob > 3.0.0 in your gemfile. Set the real delivery_method through delivery_options[:delayed_job]
+
+  ActionSmser.delivery_options[:delayed_job] = { :delivery_method => :patidure, :priority => 0 }
+```
+
+
 If you add other common gateways to this framework, plz generate tests and send us a patch.
 
 
