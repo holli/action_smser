@@ -4,6 +4,7 @@ require "action_smser/base"
 require "action_smser/delivery_methods/test_array"
 require "action_smser/delivery_methods/simple_http"
 require "action_smser/delivery_methods/nexmo"
+require "action_smser/delivery_methods/delayed_job"
 
 module ActionSmser
 

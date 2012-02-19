@@ -9,17 +9,12 @@ module ActionSmser::DeliveryMethods
   class Nexmo < SimpleHttp
     
     def self.deliver(sms)
-      logger.info "Delivering sms by https"
-
       options = sms.delivery_options[:nexmo] || {}
       options = options.dup
 
       options[:server] = 'rest.nexmo.com'
       options[:use_ssl] = true
       options[:status_report_req] ||= sms.delivery_options[:save_delivery_reports]
-
-      logger.info("Nexmo delivery with #{sms.to_numbers_array.count} recipients")
-      to_original = sms.to
 
       sms.delivery_info = []
       delivery_reports = []
@@ -46,8 +41,6 @@ module ActionSmser::DeliveryMethods
           delivery_reports << dr
         end
       end
-
-      sms.to = to_original
 
       sms.delivery_options[:save_delivery_reports] ? delivery_reports : sms.delivery_info
     end

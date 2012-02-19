@@ -48,11 +48,6 @@ class ActionSmser::Base
   # Delivery methods can use this to save data for debugging, e.g. http responses etc
   attr_accessor :delivery_info
 
-  # sms_type is string "ClassName.ActionName", initialized in beginning
-  #def sms_type
-  #  "#{self.class}.#{@sms_action}"
-  #end
-
   # Called from class.method_missing with own_sms_message when you call OwnMailer.own_sms_message
   def initialize(method_name = 'no_name_given', *args)
     @delivery_options = ActionSmser.delivery_options.dup
@@ -88,14 +83,13 @@ class ActionSmser::Base
 
     return false unless valid?
 
-    logger.info "Sending sms (#{self.to_s})"
+    logger.info "Sending sms - Delivery_method: #{delivery_options[:delivery_method]} -  Sms: (#{self.to_s})"
 
-    response = delivery_method.deliver(self) if valid?
+    response = delivery_method.deliver(self)
 
     self.send(:after_delivery, response) if self.respond_to?(:after_delivery)
 
     response
-    #SmsSentInfo.create_from_http_response(@response, self.sender, recipients_receive_sms, sms_type, self.message)
   end
 
   # Most of the gateways want escaped and ISO encoded messages

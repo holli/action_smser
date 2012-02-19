@@ -44,7 +44,7 @@ module ActionSmser
     end
 
     # This updates re_delivered attribute for itself
-    def re_delivarable_sms(changed_delivery_options = {})
+    def re_delivarable_sms()
       ActionSmser::Logger.info("Re_delivering: #{self.inspect}")
       self.update_attribute(:re_delivered, true)
       
