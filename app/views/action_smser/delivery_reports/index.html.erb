@@ -10,8 +10,8 @@
       1.month.ago..10.minutes.ago
     when 'last 24 hours'
       1.day.ago..10.minutes.ago
-    when '24 hours before that'
-      2.days.ago..1.day.ago
+    when /^(\d\d)-(\d\d) hours/
+      $1.to_i.hours.ago..$2.to_i.hours.ago
     else
       1.week.ago..10.minutes.ago
     end
@@ -40,7 +40,7 @@
 
 <p class="selection_links">
   <strong>Show summary:</strong>
-  <% ['Last 24 hours', '24 hours before that', 'Last week', 'Week before that', 'Last month'].each do |key| %>
+  <% ['Last 24 hours', '48-24 hours', '72-48 hours', '96-72 hours ago', 'Last week', 'Week before that', 'Last month'].each do |key| %>
     <%= link_to key, dr_summary_url(:time_span => key), :class => (key == params['time_span'] ? 'selected' : 'not_selected') %>
   <% end %>
 </p>
@@ -94,7 +94,7 @@
        total = ar_gateway.count
        total_delivered = ar_delivered.count
     %>
-    <% ["00:00:30", "00:01:00", "00:02:00", "00:10:00", "00:30:00", "00:90:00", "24:00:00", "48:00:00"].each do |time| %>
+    <% ["00:00:30", "00:01:00", "00:02:00", "00:10:00", "00:30:00", "00:90:00", "03:00:00", "06:00:00", "24:00:00", "48:00:00"].each do |time| %>
       <% dev_count = ar_delivered.where('TIMEDIFF(status_updated_at, created_at) < ?', time).count %>
       <tr>
         <td><%= time %></td>
