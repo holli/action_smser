@@ -7,13 +7,13 @@
     when 'week before that'
       2.weeks.ago..1.week.ago
     when 'last 30 days'
-      30.days..10.minutes.ago
+      30.days.ago..10.minutes.ago
     when 'this month'
       Time.now.at_beginning_of_month..10.minutes.ago
     when '1 month ago'
-      1.month.ago.at_beginning_of_month..Time.now.at_beginning_of_month
+      1.month.ago.at_beginning_of_month..1.month.ago.at_end_of_month
     when '2 months ago'
-      2.month.ago.at_beginning_of_month..1.month.ago.at_beginning_of_month
+      2.month.ago.at_beginning_of_month..2.month.ago.at_end_of_month
     when 'last 24 hours'
       1.day.ago..10.minutes.ago
     when /^(\d\d)-(\d\d) hours/

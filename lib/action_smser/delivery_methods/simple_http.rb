@@ -43,7 +43,6 @@ module ActionSmser::DeliveryMethods
       http = Net::HTTP.new(options[:server], server_port)
       if options[:use_ssl]
         http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
       unless Rails.env.test?
