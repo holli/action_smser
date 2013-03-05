@@ -6,8 +6,14 @@
   time_span = case params['time_span'].to_s.downcase
     when 'week before that'
       2.weeks.ago..1.week.ago
-    when 'last month'
-      1.month.ago..10.minutes.ago
+    when 'last 30 days'
+      30.days..10.minutes.ago
+    when 'this month'
+      Time.now.at_beginning_of_month..10.minutes.ago
+    when '1 month ago'
+      1.month.ago.at_beginning_of_month..Time.now.at_beginning_of_month
+    when '2 months ago'
+      2.month.ago.at_beginning_of_month..1.month.ago.at_beginning_of_month
     when 'last 24 hours'
       1.day.ago..10.minutes.ago
     when /^(\d\d)-(\d\d) hours/
@@ -40,7 +46,8 @@
 
 <p class="selection_links">
   <strong>Show summary:</strong>
-  <% ['Last 24 hours', '48-24 hours', '72-48 hours', '96-72 hours ago', 'Last week', 'Week before that', 'Last month'].each do |key| %>
+  <% ['Last 24 hours', '48-24 hous', '72-48 hours', '96-72 hours ago', 'Last week', 'Week before that',
+      'Last 30 days', 'This month', '1 month ago', '2 months ago'].each do |key| %>
     <%= link_to key, dr_summary_url(:time_span => key), :class => (key == params['time_span'] ? 'selected' : 'not_selected') %>
   <% end %>
 </p>

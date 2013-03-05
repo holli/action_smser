@@ -41,6 +41,9 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
 
   test "body should be possible to encode" do
     assert_equal "Body+with+%E4%E4kk%F6set+end", @sms.body_encoded_escaped
+
+    @sms = MockSms.basic_sms(@receivers, @sender, "ääkköset - euro=€ - ...=…")
+    assert_equal "%E4%E4kk%F6set+-+euro%3D%A4+-+...%3D_", @sms.body_encoded_escaped, "should use '_' in place of unknown chars"
   end
 
   test "body should be cropped to 500 chars, limit extra looong messages" do

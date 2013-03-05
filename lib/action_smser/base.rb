@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'cgi'
-require 'iconv'
 
 class ActionSmser::Base
 
@@ -98,9 +97,12 @@ class ActionSmser::Base
 
   # Most of the gateways want escaped and ISO encoded messages
   # Also make sure that its max 500 chars long
-  def body_encoded_escaped(to = 'ISO-8859-15//TRANSLIT//IGNORE')
+  def body_encoded_escaped(to = 'ISO-8859-15')
     msg = body.first(500)
-    CGI.escape(Iconv.iconv(to, 'utf-8', msg).first.to_s)
+
+    # This could use better translittering with fallback param, see http://blog.segment7.net/2010/12/17/from-iconv-iconv-to-string-encode
+    msg_encoded = msg.encode(to, :invalid => :replace, :undef => :replace, :replace => '_')
+    CGI.escape(msg_encoded)
   end
 
   def body_escaped
