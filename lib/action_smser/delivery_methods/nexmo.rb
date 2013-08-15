@@ -5,6 +5,7 @@ module ActionSmser::DeliveryMethods
 
   # Very simple implementation of http request to gateway. Options used are
   # server, use_ssl, username, password
+  # Also optional code (=unicode) is possible. See https://docs.nexmo.com/index.php/messaging-sms-api/send-message
   # overwrite deliver_path(sms, options) with your own if you have different type of path
   class Nexmo < SimpleHttp
     
@@ -45,7 +46,9 @@ module ActionSmser::DeliveryMethods
     end
 
     def self.deliver_path(sms, to, options)
-      "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{to}&text=#{sms.body_escaped}"
+      path = "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{to}&text=#{sms.body_escaped}"
+      path += "&code=#{options[:code]}" if options[:code]
+      path
     end
 
     # Callback message status handling

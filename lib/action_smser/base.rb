@@ -53,7 +53,7 @@ class ActionSmser::Base
 
   # Called from class.method_missing with own_sms_message when you call OwnMailer.own_sms_message
   def initialize(method_name = 'no_name_given', *args)
-    @delivery_options = ActionSmser.delivery_options.dup
+    @delivery_options = ActionSmser.delivery_options.deep_dup
     @valid = true
     @sms_action = method_name
     @sms_type = "#{self.class}.#{@sms_action}"
