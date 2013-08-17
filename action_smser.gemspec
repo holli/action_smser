@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/holli/action_smser"
   s.summary     = "ActionSmser == SMS && ActionMailer. Simple way to use SMS (Short Message Service) in the same way as ActionMailer. Includes also delivery reports and easy way to add custom gateways (simple http and nexmo by default)."
   s.description = "ActionSmser == SMS && ActionMailer. Simple way to use SMS (Short Message Service) in the same way as ActionMailer. Includes also delivery reports and easy way to add custom gateways (simple http and nexmo by default)."
+  s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
