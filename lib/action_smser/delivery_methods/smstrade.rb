@@ -24,7 +24,7 @@ module ActionSmser::DeliveryMethods
       options = options.dup
 
       options[:server] = 'gateway.smstrade.de'
-      options[:use_ssl] = true
+      options[:use_ssl] = false
       options[:status_report_req] ||= sms.delivery_options[:save_delivery_reports]
 
       sms.delivery_info = []
