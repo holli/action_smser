@@ -42,10 +42,10 @@ module ActionSmser::DeliveryMethods
         result = {"response-code" => result[0], "message-id" => result[1], "cost" => result[2], "message-count" => result[3]}
 
         if ERROR_CODES[result["response-code"]].nil?
-          raise "Unknown response code: `#{result["response-code"]}'"
+          status = "UNKNOWN_ERROR"
+        else
+          status = ERROR_CODES[result["response-code"]]
         end
-
-        status = ERROR_CODES[result["response-code"]]
 
         # Results include sms_id or error code in each line
         if sms.delivery_options[:save_delivery_reports]
