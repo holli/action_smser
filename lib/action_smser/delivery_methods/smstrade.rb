@@ -64,7 +64,7 @@ module ActionSmser::DeliveryMethods
 
     def self.deliver_path(sms, to, options)
       "/?key=#{options[:key]}"+
-      "&from=#{sms.from_encoded}"+
+      "&from=#{sms.from_escaped}"+
       "&to=#{to}"+
       "&message=#{sms.body_escaped}"+
       "&route=#{options[:route]}"+
