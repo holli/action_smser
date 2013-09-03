@@ -69,7 +69,7 @@ module ActionSmser::DeliveryMethods
       "&message=#{sms.body_escaped}"+
       "&route=#{options[:route]}"+
       "&debug=#{options[:debug] ? 1 : 0}"+
-      "&cost=1&message_id=1&count=1"
+      "&cost=1&message_id=1&count=1&charset=utf-8"
     end
   end
 end
