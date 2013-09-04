@@ -131,6 +131,10 @@ class ActionSmser::Base
     from.to_s.gsub(/^(\+|0)/, "")
   end
 
+  def from_escaped
+    CGI.escape from_encoded
+  end
+
   def ttl_to_i
     ttl.blank? ? ActionSmser.delivery_options[:default_ttl] : ttl.to_i
   end
