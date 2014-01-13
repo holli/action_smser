@@ -47,7 +47,7 @@ module ActionSmser::DeliveryMethods
 
     def self.deliver_path(sms, to, options)
       path = "/sms/json?username=#{options[:username]}&password=#{options[:password]}&ttl=#{sms.ttl_to_i*1000}&status-report-req=#{options[:status_report_req]}&from=#{sms.from_encoded}&to=#{to}&text=#{sms.body_escaped}"
-      path += "&code=#{options[:code]}" if options[:code]
+      path += "&type=#{options[:type]}" if options[:type]
       path
     end
 

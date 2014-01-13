@@ -13,8 +13,7 @@ gem "jquery-rails"
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-# To use debugger
-#gem 'ruby-debug'
+#gem "pry"
 
 # For travis testing 
 # http://schneems.com/post/50991826838/testing-against-multiple-rails-versions

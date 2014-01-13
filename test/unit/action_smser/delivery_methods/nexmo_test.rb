@@ -30,6 +30,12 @@ class ActionSmser::NexmoTest < ActiveSupport::TestCase
     assert_equal 2, @sms_delivery.count
   end
 
+  test "delivery path should have unicode set when needed" do
+    assert !ActionSmser::DeliveryMethods::Nexmo.deliver_path(@sms, @sms.to, @sms.delivery_options[:nexmo]).include?('&type')
+    @sms.delivery_options[:nexmo][:type] = 'unicode'
+    assert ActionSmser::DeliveryMethods::Nexmo.deliver_path(@sms, @sms.to, @sms.delivery_options[:nexmo]).include?('&type=unicode')
+  end
+
   test "with saving delivery_reports" do
     @sms.delivery_options[:save_delivery_reports] = true
     @delivery_reports_count = ActionSmser::DeliveryReport.count

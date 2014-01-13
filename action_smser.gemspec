@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   s.add_dependency "railties", ">= 3.1"
 
   s.add_development_dependency "mocha"
-  #s.add_development_dependency "ruby-debug"
   #s.add_development_dependency "fakeweb"
 
   s.add_development_dependency "sqlite3"
