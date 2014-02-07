@@ -50,7 +50,7 @@ module ActionSmser::DeliveryMethods
           response = http.request(Net::HTTP::Get.new(path)) unless Rails.env.test? #Never request by accident in test environment.
         end
       else
-        logger.warn "DeliveryMethods does never make real http requests in test environment!"
+        ActionSmser::Logger.warn "DeliveryMethods does never make real http requests in test environment!"
       end
 
       response
@@ -58,10 +58,6 @@ module ActionSmser::DeliveryMethods
 
     def self.deliver_path(sms, options)
       "/api/sendsms/plain?user=#{options[:username]}&password=#{options[:password]}&sender=#{sms.from_encoded}&SMSText=#{sms.body_encoded_escaped}&GSM=#{sms.to_encoded}"
-    end
-
-    def self.logger
-      ActionSmser::Logger
     end
 
   end

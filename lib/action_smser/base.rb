@@ -139,10 +139,5 @@ class ActionSmser::Base
     ttl.blank? ? ActionSmser.delivery_options[:default_ttl] : ttl.to_i
   end
 
-  def logger
-    ActionSmser::Logger
-  end
-
-
 end
 
