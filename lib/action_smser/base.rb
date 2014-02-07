@@ -86,7 +86,7 @@ class ActionSmser::Base
 
     return false unless valid?
 
-    logger.info "Sending sms - Delivery_method: #{delivery_options[:delivery_method]} -  Sms: (#{self.to_s})"
+    ActionSmser::Logger.info "Sending sms - Delivery_method: #{delivery_options[:delivery_method]} -  Sms: (#{self.to_s})"
 
     response = delivery_method.deliver(self)
 

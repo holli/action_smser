@@ -8,14 +8,14 @@ module ActionSmser::DeliveryMethods
   # overwrite deliver_path(sms, options) with your own if you have different type of path
   # When save_delivery_reports=true it expects collection msg_ids in each line in http response
   class SimpleHttp
-    
+
     def self.deliver(sms, options = nil)
       options = options ? options : sms.delivery_options[:simple_http]
       deliver_path = self.deliver_path(sms, options)
       response = self.deliver_http_request(sms, options, deliver_path)
 
-      logger.info "SimpleHttp delivery ||| #{deliver_path} ||| #{response.inspect}"
-      logger.info response.body if !response.blank?
+      ActionSmser::Logger.info "SimpleHttp delivery ||| #{deliver_path} ||| #{response.inspect}"
+      ActionSmser::Logger.info response.body if !response.blank?
       sms.delivery_info = response
 
       # Results include sms_id or error code in each line
@@ -38,7 +38,7 @@ module ActionSmser::DeliveryMethods
       # http://notetoself.vrensk.com/2008/09/verified-https-in-ruby/
 
       response = nil
-      
+
       server_port = options[:use_ssl] ? 443 : 80
       http = Net::HTTP.new(options[:server], server_port)
       if options[:use_ssl]

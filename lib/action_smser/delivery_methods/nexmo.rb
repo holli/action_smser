@@ -8,7 +8,7 @@ module ActionSmser::DeliveryMethods
   # Also optional code (=unicode) is possible. See https://docs.nexmo.com/index.php/messaging-sms-api/send-message
   # overwrite deliver_path(sms, options) with your own if you have different type of path
   class Nexmo < SimpleHttp
-    
+
     def self.deliver(sms)
       options = sms.delivery_options[:nexmo] || {}
       options = options.dup
@@ -23,8 +23,8 @@ module ActionSmser::DeliveryMethods
         deliver_path = self.deliver_path(sms, to, options)
         response = self.deliver_http_request(sms, options, deliver_path)
 
-        logger.info "Nexmo delivery http ||| #{deliver_path} ||| #{response.inspect}"
-        logger.info response.body if !response.blank?
+        ActionSmser::Logger.info "Nexmo delivery http ||| #{deliver_path} ||| #{response.inspect}"
+        ActionSmser::Logger.info response.body if !response.blank?
 
         sms.delivery_info.push(response)
 
