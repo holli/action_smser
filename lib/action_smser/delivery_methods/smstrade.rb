@@ -33,8 +33,8 @@ module ActionSmser::DeliveryMethods
         deliver_path = self.deliver_path(sms, to, options)
         response = self.deliver_http_request(sms, options, deliver_path)
 
-        logger.info "Smstrade delivery http ||| #{deliver_path} ||| #{response.inspect}"
-        logger.info response.body if !response.blank?
+        ActionSmser::Logger.info "Smstrade delivery http ||| #{deliver_path} ||| #{response.inspect}"
+        ActionSmser::Logger.info response.body if !response.blank?
 
         sms.delivery_info.push(response)
 
