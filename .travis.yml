@@ -1,5 +1,6 @@
 rvm:
   - 1.9.3
+  - 2.1
 env:
   - "RAILS_VERSION=3.2.16"
   - "RAILS_VERSION=4.0.2"
