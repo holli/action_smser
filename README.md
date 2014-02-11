@@ -228,7 +228,7 @@ end
 
 # Requirements
 
-Gem has been tested with ruby 1.9.2 and Rails 3.1.
+Gem has been tested with ruby 1.9.3, ruby 2.1, Rails 3.1 and Rails 4
 
 [<img src="https://secure.travis-ci.org/holli/action_smser.png" />](http://travis-ci.org/holli/action_smser)
 
