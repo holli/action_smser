@@ -226,22 +226,13 @@ end
 
 ```
 
-# Requirements
-
-Gem has been tested with ruby 1.9.3, ruby 2.1, Rails 3.1 and Rails 4
-
-[<img src="https://secure.travis-ci.org/holli/action_smser.png" />](http://travis-ci.org/holli/action_smser)
-
-http://travis-ci.org/#!/holli/action_smser
-
-### Changes
-
-Version 2.0 dropped support for ruby 1.8.7. Versions below 2.0 were tested also with ruby 1.8.7
-
-
 # Support
 
 Submit suggestions or feature requests as a GitHub Issue or Pull Request. Remember to update tests. Tests are quite extensive.
+
+Check travis for what environments are supported http://travis-ci.org/#!/holli/action_smser
+
+[<img src="https://secure.travis-ci.org/holli/action_smser.png" />](http://travis-ci.org/holli/action_smser)
 
 
 ### Similar gems
