@@ -11,7 +11,7 @@ module ActionSmser
 
         ActionSmser::Logger.info("Gateway_commit found parser for gateway: #{params['gateway']}")
 
-        dr_var_array = ActionSmser.delivery_options[:gateway_commit][params['gateway']].send(:process_delivery_report, params)
+        dr_var_array = ActionSmser.delivery_options[:gateway_commit][params['gateway']].send(:process_delivery_report, request)
         dr_array = []
 
         if !dr_var_array.blank?

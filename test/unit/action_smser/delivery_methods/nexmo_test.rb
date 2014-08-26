@@ -58,15 +58,16 @@ class ActionSmser::NexmoTest < ActiveSupport::TestCase
     assert_equal "123555123", @dr2.to, "receiver wrong"
   end
 
-  test "gateway process_delivery_report(params)" do
+  test "gateway process_delivery_report(request)" do
     @msg_id = "msg_id_asdf"
 
-    result_array = ActionSmser::DeliveryMethods::Nexmo.process_delivery_report(
-        {"messageId" => @msg_id, "status" => "EXPIRED"} )
+    request_mock = MiniTest::Mock.new
+    request_mock.expect(:params, {"messageId" => @msg_id, "status" => "EXPIRED"})
+    result_array = ActionSmser::DeliveryMethods::Nexmo.process_delivery_report(request_mock)
 
     assert_equal @msg_id, result_array.first['msg_id']
     assert_equal "EXPIRED", result_array.first['status']
-
+    assert request_mock.verify
   end
 
 

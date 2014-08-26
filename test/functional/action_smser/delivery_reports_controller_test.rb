@@ -11,8 +11,9 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
       end
     end
 
-    def self.process_delivery_report(params)
+    def self.process_delivery_report(request)
       processable_array = []
+      params = request.params
       if params["DeliveryReport"] && params["DeliveryReport"]["message"]
         reports = params["DeliveryReport"]["message"]
         reports = [reports] unless reports.is_a?(Array)

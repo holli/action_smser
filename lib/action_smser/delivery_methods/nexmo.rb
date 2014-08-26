@@ -53,7 +53,8 @@ module ActionSmser::DeliveryMethods
 
     # Callback message status handling
     # This has to return array of hashes. In hash msg_id is the key and other params are updated to db
-    def self.process_delivery_report(params)
+    def self.process_delivery_report(request)
+      params = request.params
       processable_array = []
       if msg_id = params["messageId"]
         processable_array << {'msg_id' => params["messageId"], 'status' => params['status']}

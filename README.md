@@ -136,7 +136,8 @@ class ActionSmserConfigExample
   end
 
   # This has to return array of hashes. In hash msg_id is the key and other params are updated to db
-  def self.process_delivery_report(params)
+  def self.process_delivery_report(request)
+    params = request.params
     processable_array = []
     if params["DeliveryReport"] && params["DeliveryReport"]["message"]
       reports = params["DeliveryReport"]["message"]
