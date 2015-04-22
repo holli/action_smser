@@ -1,3 +1,7 @@
+## 3.1.0 (2015-04-25)
+
+  - dropped support for rails 4.1 and below (we are not testing anymore, might still work)
+
 ## 3.0.0 (2014-08-26)
 
   - changed process_delivery_report method to have request instead of params
