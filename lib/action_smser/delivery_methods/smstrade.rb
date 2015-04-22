@@ -29,7 +29,9 @@ module ActionSmser::DeliveryMethods
 
       sms.delivery_info = []
 
-      sms.to_numbers_array.each do |to|
+      # SmsTrade might confuse US numbers with German numbers if not prepended with 00 or +.
+      formatted_numbers = sms.to_numbers_array.map { |to| ["00", to].join }
+      formatted_numbers.each do |to|
         deliver_path = self.deliver_path(sms, to, options)
         response = self.deliver_http_request(sms, options, deliver_path)
 

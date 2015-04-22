@@ -18,14 +18,14 @@ class ActionSmser::BaseTest < ActiveSupport::TestCase
   end
 
   setup do
-    @receivers = ["555123555", "123", "+358123555123"]
+    @receivers = ["555123555", "123", "+358123555123", "004915112341234", "04917332341111"]
     @sender = "555666"
     @body = "Body with ääkköset end"
     @sms = MockSms.basic_sms(@receivers, @sender, @body)
   end
 
   test "receivers should be joined by commas" do
-    assert_equal "555123555,123,358123555123", @sms.to_encoded
+    assert_equal "555123555,123,358123555123,4915112341234,4917332341111", @sms.to_encoded
   end
 
   test "should be ok with single receivers" do

@@ -29,6 +29,21 @@ class ActionSmser::SmstradeTest < ActiveSupport::TestCase
     assert_equal 2, @sms_delivery.count
   end
 
+  test "should only receive numbers not prepended with zeros or plus signs" do
+    prepended_receivers = ["004915112341234", "+4917812341234", "04917332341111"]
+    sms = MockSms.basic_sms(prepended_receivers, @sender, @body)
+
+    assert_equal ["4915112341234", "4917812341234", "4917332341111"], sms.to_numbers_array
+  end
+
+  test "should append 00 to phone numbers before sending" do
+    @receivers.each do |to|
+      ActionSmser::DeliveryMethods::Smstrade.expects(:deliver_path).with(anything(), "00#{to}", anything())
+    end
+
+    sms_delivery = @sms.deliver
+  end
+
   test "with saving delivery_reports" do
     @sms.delivery_options[:save_delivery_reports] = true
     @delivery_reports_count = ActionSmser::DeliveryReport.count
@@ -44,10 +59,10 @@ class ActionSmser::SmstradeTest < ActiveSupport::TestCase
 
     @dr1 = @sms_delivery.first
     assert_equal "smstrade", @dr1.gateway
-    assert_equal "4915112341234", @dr1.to, "receiver wrong"
+    assert_equal "004915112341234", @dr1.to, "receiver wrong"
     assert_equal "LOCAL_SENT", @dr1.status
 
     @dr2 = @sms_delivery.last
-    assert_equal "4917812341234", @dr2.to, "receiver wrong"
+    assert_equal "004917812341234", @dr2.to, "receiver wrong"
   end
 end

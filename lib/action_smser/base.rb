@@ -120,7 +120,7 @@ class ActionSmser::Base
     else
       [@to.to_s]
     end
-    array.collect{|number| number.gsub(/^(\+|0)/, "")}
+    array.collect{|number| number.gsub(/^(\+|0{1,2})/, "")}
   end
 
   def to_as_array
