@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20120102215215) do
 
-  create_table "action_smser_delivery_reports", force: true do |t|
+  create_table "action_smser_delivery_reports", force: :cascade do |t|
     t.string   "msg_id"
     t.string   "status"
     t.datetime "status_updated_at"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 20120102215215) do
     t.string   "from"
     t.string   "body"
     t.string   "gateway"
+    t.integer  "re_delivery_of_delivery_report_id"
+    t.boolean  "re_delivered"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

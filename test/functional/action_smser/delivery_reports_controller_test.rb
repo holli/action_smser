@@ -1,4 +1,4 @@
-require 'test_helper'
+require './test/test_helper'
 
 class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
@@ -33,6 +33,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
   setup do
     ActionSmser.delivery_options[:gateway_commit_observers] = []
+    @routes = ActionSmser::Engine.routes
   end
 
   test "gateway_commit with existing dr" do
@@ -44,7 +45,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
     SmsTestSetup.expects(:after_gateway_commit).once.with(){|var| var.is_a?(Array) && var.first.is_a?(ActionSmser::DeliveryReport)}
 
-    get 'gateway_commit', :use_route => :action_smser, :gateway => 'test_gateway',
+    get 'gateway_commit', :gateway => 'test_gateway',
         "DeliveryReport"=>{"message"=>{"id"=>@msg_id, "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
 
 
@@ -62,7 +63,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
     ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
 
-    get 'gateway_commit', :use_route => :action_smser, :gateway => 'test_gateway',
+    get 'gateway_commit', :gateway => 'test_gateway',
         "DeliveryReport"=>
             {"message"=>[{"id"=>@msg_id.to_s, "status"=>"DELIVERED"},
                          {"id"=>@msg_id2, "status"=>"DELIVERED"}]}
@@ -80,7 +81,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
   test "gateway_commit without dr" do
     ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
 
-    get 'gateway_commit', :use_route => :action_smser, :gateway => 'test_gateway',
+    get 'gateway_commit', :gateway => 'test_gateway',
         "DeliveryReport"=>{"message"=>{"id"=>"wrongid", "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
 
     assert_response :success
@@ -88,7 +89,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
   end
 
   test "gateway_commit without any parser" do
-    get 'gateway_commit', :use_route => :action_smser, :gateway => 'gateway_not_found',
+    get 'gateway_commit', :gateway => 'gateway_not_found',
         "DeliveryReport"=>{"message"=>{"id"=>"wrongid", "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
 
     assert_response :success
@@ -97,7 +98,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
 
   test "index with forbidden admin_access (default access mode)" do
-    get 'index', :use_route => :action_smser
+    get 'index'
     assert_response 403
     assert_template nil
   end
@@ -109,7 +110,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
       ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
     end
     session[:admin_logged] = true
-    get 'index', :use_route => :action_smser
+    get 'index'
 
     assert_response :success
     assert_template :index
@@ -124,7 +125,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
       ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
     end
     ActionSmser::DeliveryReportsController.any_instance.stubs(:admin_access_only).returns(true)
-    get 'index', :use_route => :action_smser
+    get 'index'
     assert_response :success
     assert_template :index
   end
@@ -134,7 +135,7 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
       ActionSmser::DeliveryReport.create(:msg_id => "idtest_#{rand(10)}")
     end
     ActionSmser::DeliveryReportsController.any_instance.stubs(:admin_access_only).returns(true)
-    get 'list', :use_route => :action_smser
+    get 'list'
     assert_response :success
     assert_template :list
   end
