@@ -1,6 +1,7 @@
-## 3.1.0 (2015-04-25)
+## 3.1.0 (2015-04-22)
 
   - dropped support for rails 4.1 and below (we are not testing anymore, might still work)
+  - fixed minor problems with smstrade api, see https://github.com/holli/action_smser/pull/10
 
 ## 3.0.0 (2014-08-26)
 
