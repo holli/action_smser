@@ -1,4 +1,4 @@
-class CreateActionSmserDeliveryReports < ActiveRecord::Migration
+class CreateActionSmserDeliveryReports < ActiveRecord::Migration[4.2]
   def change
     create_table :action_smser_delivery_reports do |t|
       t.string :msg_id
