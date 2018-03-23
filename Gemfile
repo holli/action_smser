@@ -14,6 +14,7 @@ gem "jquery-rails"
 # your gem to rubygems.org.
 
 #gem "pry"
+gem 'rails-controller-testing'
 
 # For travis testing 
 # http://schneems.com/post/50991826838/testing-against-multiple-rails-versions

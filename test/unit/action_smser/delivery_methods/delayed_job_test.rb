@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'test_helper'
+require './test/test_helper'
 
 # We mock delayed_job
 module Delayed
@@ -37,7 +37,7 @@ class ActionSmser::DelayedJobTest < ActiveSupport::TestCase
     smsdj = ActionSmser::DeliveryMethods::DelayedJob::SmsDeliverJob.new(@sms, @sms.to_numbers_array.first)
 
     [:body, :from, :sms_type, :re_delivery_of_delivery_report_id, :ttl, :delivery_info].each do |var|
-      assert_equal smsdj.send(var), @sms.send(var)
+      assert_equal [var, smsdj.send(var)], [var, @sms.send(var)]
     end
 
     assert smsdj.body.object_id != @sms.body.object_id, "It should make copy of all values, not use the same objects."

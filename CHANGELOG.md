@@ -1,3 +1,7 @@
+## 3.2.0 (2018-03-20)
+
+  - Rails 5 support, dropped support for Rails 4
+
 ## 3.1.0 (2015-04-22)
 
   - dropped support for rails 4.1 and below (we are not testing anymore, might still work)

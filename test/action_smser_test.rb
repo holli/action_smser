@@ -1,4 +1,5 @@
-require 'test_helper'
+#require 'test_helper'
+require './test/test_helper'
 
 class ActionSmserTest < ActiveSupport::TestCase
   test "truth" do

@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'test_helper'
+require './test/test_helper'
 
 class ActionSmser::NexmoTest < ActiveSupport::TestCase
   class MockSms<ActionSmser::Base

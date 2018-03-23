@@ -49,14 +49,14 @@ module ActionSmser
       end
 
       if updated_count > 0
-        render :text => "Updated info for #{updated_count} items"
+        render :plain => "Updated info for #{updated_count} items"
       else
-        render :text => "Not saved"
+        render :plain => "Not saved"
       end
     end
 
 
-    before_filter :admin_access_only, :except => :gateway_commit
+    before_action :admin_access_only, :except => :gateway_commit
 
     def index
 
@@ -71,7 +71,7 @@ module ActionSmser
       if !ActionSmser.delivery_options[:admin_access].blank? && ActionSmser.delivery_options[:admin_access].send(:admin_access, self)
         return true
       else
-        render :text => "Forbidden, only for admins", :status => 403
+        render :plain => "Forbidden, only for admins", :status => 403
         return false
       end
     end

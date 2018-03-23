@@ -45,8 +45,9 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
     SmsTestSetup.expects(:after_gateway_commit).once.with(){|var| var.is_a?(Array) && var.first.is_a?(ActionSmser::DeliveryReport)}
 
-    get 'gateway_commit', :gateway => 'test_gateway',
-        "DeliveryReport"=>{"message"=>{"id"=>@msg_id, "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
+    get 'gateway_commit', params: {:gateway => 'test_gateway',
+                                   "DeliveryReport" => {"message" => {"id" => @msg_id, "donedate" => "2012/01/03 14:20:45",
+                                                                      "sentdate" => "2012/01/03 14:20:40", "status" => "DELIVERED"}}}
 
 
     assert_response :success
@@ -63,10 +64,10 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
 
     ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
 
-    get 'gateway_commit', :gateway => 'test_gateway',
-        "DeliveryReport"=>
-            {"message"=>[{"id"=>@msg_id.to_s, "status"=>"DELIVERED"},
-                         {"id"=>@msg_id2, "status"=>"DELIVERED"}]}
+    get 'gateway_commit', params: {:gateway => 'test_gateway',
+                                   "DeliveryReport" =>
+                                       {"message" => [{"id" => @msg_id.to_s, "status" => "DELIVERED"},
+                                                      {"id" => @msg_id2, "status" => "DELIVERED"}]}}
 
     assert_response :success
     assert @response.body.downcase.include?("update"), "should have responded about saving"
@@ -81,16 +82,18 @@ class ActionSmser::DeliveryReportsControllerTest < ActionController::TestCase
   test "gateway_commit without dr" do
     ActionSmser.delivery_options[:gateway_commit] = {'test_gateway' => SmsTestSetup}
 
-    get 'gateway_commit', :gateway => 'test_gateway',
-        "DeliveryReport"=>{"message"=>{"id"=>"wrongid", "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
+    get 'gateway_commit', params: {:gateway => 'test_gateway',
+                                   "DeliveryReport" => {"message" => {"id" => "wrongid", "donedate" => "2012/01/03 14:20:45",
+                                                                      "sentdate" => "2012/01/03 14:20:40", "status" => "DELIVERED"}}}
 
     assert_response :success
     assert @response.body =~ /not/i, "should have responded not saved"
   end
 
   test "gateway_commit without any parser" do
-    get 'gateway_commit', :gateway => 'gateway_not_found',
-        "DeliveryReport"=>{"message"=>{"id"=>"wrongid", "donedate"=>"2012/01/03 14:20:45", "sentdate"=>"2012/01/03 14:20:40", "status"=>"DELIVERED"}}
+    get 'gateway_commit', params: {:gateway => 'gateway_not_found',
+                                   "DeliveryReport" => {"message" => {"id" => "wrongid", "donedate" => "2012/01/03 14:20:45",
+                                                                      "sentdate" => "2012/01/03 14:20:40", "status" => "DELIVERED"}}}
 
     assert_response :success
     assert @response.body =~ /not/i, "should have responded not saved"
