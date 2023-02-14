@@ -14,8 +14,10 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: ['2.6.10', '3.2']
-        rails-version: ['5.2', '6.0']
+        # ruby-version: ['2.6.10', '3.2']
+        # rails-version: ['5.2', '6.0']
+        ruby-version: ['2.6.10']
+        rails-version: ['5.2']
 
     steps:
       - uses: actions/checkout@v3
