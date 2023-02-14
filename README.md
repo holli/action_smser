@@ -3,8 +3,6 @@
 ActionSmser == SMS && ActionMailer. Simple way to use SMS (Short Message Service) in the same way as ActionMailer.
 Includes also delivery reports and easy way to add custom gateways. See examples below.
 
-[<img src="https://secure.travis-ci.org/holli/action_smser.png" />](http://travis-ci.org/holli/action_smser)
-
 # Install
 
 
@@ -231,9 +229,8 @@ end
 
 Submit suggestions or feature requests as a GitHub Issue or Pull Request. Remember to update tests. Tests are quite extensive.
 
-Check travis for what environments are supported http://travis-ci.org/#!/holli/action_smser
+Check github actions for what environments are supported.
 
-[<img src="https://secure.travis-ci.org/holli/action_smser.png" />](http://travis-ci.org/holli/action_smser)
 
 
 ### Similar gems

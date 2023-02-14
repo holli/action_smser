@@ -1,3 +1,6 @@
+## (2022-01-01)
+  - Rails 6 support
+
 ## 3.2.0 (2018-03-20)
 
   - Rails 5 support, dropped support for Rails 4

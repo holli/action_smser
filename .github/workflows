@@ -1,0 +1,35 @@
+
+name: Ruby
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby-version: ['2.6.10', '3.2']
+        rails-version: ['5.2', '6.0']
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@359bebbc29cbe6c87da6bc9ea3bc930432750108
+        with:
+          bundler-cache: true
+          ruby-version: ${{ matrix.ruby-version }}
+        env:
+          RAILS_VERSION: ${{ matrix.rails-version }}
+      - name: Install dependencies
+        run: bundle install
+      - name: Create db
+        run: RAILS_ENV=test bundle exec rake db:create db:migrate --trace
+      - name: Run tests
+        run: bundle exec rake
+
