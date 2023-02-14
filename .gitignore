@@ -7,3 +7,5 @@ test/dummy/db/*.sqlite3
 test/dummy/log/*.log
 test/dummy/tmp/
 test/dummy/config/initializers/git_ignored_passwords.rb
+.idea/
+projectFilesBackup/

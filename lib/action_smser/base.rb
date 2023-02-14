@@ -46,7 +46,7 @@ class ActionSmser::Base
 
   # Delivery methods can use this to save data for debugging, e.g. http responses etc
   attr_accessor :delivery_info
-  attr_accessor :delivery_reports
+  # attr_accessor :delivery_reports
   def delivery_reports
     @delivery_reports ||= []
   end

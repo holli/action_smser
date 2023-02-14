@@ -1,5 +1,5 @@
 begin
-  require 'delayed_job'
+  # require 'delayed_job'
 
   module ActionSmser::DeliveryMethods
 
@@ -33,7 +33,7 @@ begin
     end
   end
 
-rescue LoadError => e
+rescue LoadError
 
   module ActionSmser::DeliveryMethods
     class DelayedJob

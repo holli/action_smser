@@ -53,7 +53,7 @@
 
 <p class="selection_links">
   <strong>Redeliveries:</strong>
-  
+
   <% ['Include normally', 'Ignore redeliveries', 'Only redeliveries'].each do |key| %>
     <%= link_to key, dr_summary_url(:redeliveries => key), :class => (key == params['redeliveries'] ? 'selected' : 'not_selected') %>
   <% end %>
@@ -120,7 +120,7 @@
 <ul>
 <%
    total = ar_gateway.count
-   grouped_by_status = ar_gateway.group(:status).count.each do |key, val| %>
+   ar_gateway.group(:status).count.each do |key, val| %>
 
     <li>
       <strong><%= key %></strong>:
@@ -144,7 +144,7 @@
 
 <%
    total = ar_gateway.count
-   grouped_by_status = ar_gateway.group(:sms_type).count.each do |key, val| %>
+   ar_gateway.group(:sms_type).count.each do |key, val| %>
    <tr>
      <td><strong><%= key %></strong></td>
      <td><%= val %></td>

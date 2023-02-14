@@ -41,7 +41,7 @@ class ActionSmser::SmstradeTest < ActiveSupport::TestCase
       ActionSmser::DeliveryMethods::Smstrade.expects(:deliver_path).with(anything(), "00#{to}", anything())
     end
 
-    sms_delivery = @sms.deliver
+    @sms.deliver
   end
 
   test "with saving delivery_reports" do

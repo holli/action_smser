@@ -56,7 +56,7 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
     @dr = ActionSmser::DeliveryReport.create_from_sms(@sms, "123", "msg_id_a")
 
     @dr = ActionSmser::DeliveryReport.find(@dr.id)
-    new_sms = @dr.to_sms
+    # new_sms = @dr.to_sms
 
     assert_equal @sender, @dr.from, "from info wrong"
     assert_equal "123", @dr.to, "to info wrong"
@@ -80,7 +80,7 @@ class ActionSmser::DeliveryReportTest < ActiveSupport::TestCase
     assert_equal @dr.id, re_delivarable_sms.re_delivery_of_delivery_report_id
 
     assert ActionSmser::DeliveryReport.find(@dr.id).re_delivered?
-    
+
     dr_result = re_delivarable_sms.deliver
     assert dr_result.is_a?(Array)
     assert dr_result.first.is_a?(ActionSmser::DeliveryReport)
