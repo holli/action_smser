@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         # ruby-version: ['2.6.10', '3.0']
         # rails-version: ['5.2', '6.0']
@@ -27,8 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Ruby ${{ matrix.ruby-version }}
-        uses: ruby/setup-ruby@ee2113536afb7f793eed4ce60e8d3b26db912da4 # v1.127.0
-        # uses: ruby/setup-ruby@359bebbc29cbe6c87da6bc9ea3bc930432750108
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           ruby-version: ${{ matrix.ruby-version }}

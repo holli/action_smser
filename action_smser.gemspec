@@ -26,5 +26,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rails", ">= 6.0"
   s.add_development_dependency "delayed_job"
   s.add_development_dependency 'rails-controller-testing'
+  s.add_development_dependency "nokogiri"
 
 end
