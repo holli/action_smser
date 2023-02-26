@@ -1,11 +1,11 @@
 module ActionSmser
   class DeliveryReportsController < ApplicationController
 
-    def gateway_commit
+    skip_forgery_protection only: :gateway_commit
 
+    def gateway_commit
       updated_count = 0
 
-      
       if !ActionSmser.delivery_options[:gateway_commit].blank? &&
           !ActionSmser.delivery_options[:gateway_commit][params['gateway']].blank?
 
@@ -63,7 +63,7 @@ module ActionSmser
     end
 
     def list
-      
+
     end
 
 
