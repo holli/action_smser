@@ -1,4 +1,4 @@
-## 3.3.0 (2022-01-01)
+## 3.3.0 (2023-03-01)
   - Rails 7 support, droppert support for 6 etc although might work with them
   - Ruby 3.1 support
 
