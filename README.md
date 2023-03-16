@@ -81,7 +81,7 @@ end
 
 ```
 
-**Nexmo** (http://nexmo.com/) is supported also.
+**Vonage/Nexmo** (http://nexmo.com/) is supported. Nexmo was renamed to Vonage, but naming has not been updated this lib.
 
 ```
   ActionSmser.delivery_options[:delivery_method] = :nexmo
