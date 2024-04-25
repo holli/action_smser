@@ -27,7 +27,7 @@ if defined?(ActiveRecord)
       def status=(stat, skip_log = false)
         self[:status] = stat
         self.status_updated_at = Time.now
-        add_log("#{Time.now.to_s(:db)}: #{stat}") unless skip_log
+        add_log("#{Time.now.to_fs(:db)}: #{stat}") unless skip_log
       end
 
       def add_log(str)

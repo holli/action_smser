@@ -39,7 +39,7 @@
 
 
 <h1>Delivery Reports Summary for
-  (<span style="font-size: smaller"><%= "#{time_span.first.to_s(:db)} => #{time_span.last.to_s(:db)}" %></span>)
+  (<span style="font-size: smaller"><%= "#{time_span.first.to_fs(:db)} => #{time_span.last.to_fs(:db)}" %></span>)
   <%= "for #{params[:gateway]}" unless params[:gateway].blank? %>
 </h1>
 
