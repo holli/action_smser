@@ -61,7 +61,7 @@ class ActionSmser::NexmoTest < ActiveSupport::TestCase
   test "gateway process_delivery_report(request)" do
     @msg_id = "msg_id_asdf"
 
-    request_mock = MiniTest::Mock.new
+    request_mock = ::Minitest::Mock.new
     request_mock.expect(:params, {"messageId" => @msg_id, "status" => "EXPIRED"})
     result_array = ActionSmser::DeliveryMethods::Nexmo.process_delivery_report(request_mock)
 

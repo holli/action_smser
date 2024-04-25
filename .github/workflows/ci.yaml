@@ -15,18 +15,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # ruby-version: ['2.6.10', '3.0']
-        # rails-version: ['5.2', '6.0']
         include:
-          # - ruby-version: '2.7'
-          #   rails-version: '6.1.0'
           - ruby-version: '3.1'
             rails-version: '7.0.0'
           - ruby-version: '3.2'
-            rails-version: '7.0.0'
+            rails-version: '7.1.0'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@v1
         with:
