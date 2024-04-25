@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "railties", ">= 6"
 
-  s.add_development_dependency "mocha"
+  s.add_development_dependency "mocha", "~>2.2"
   s.add_development_dependency "sqlite3", "~> 1.7"
   s.add_development_dependency "rails", ">= 6.0"
   s.add_development_dependency "delayed_job"
