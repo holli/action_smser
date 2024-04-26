@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.0.0'
 
-  s.add_dependency "railties", ">= 6"
+  s.add_dependency "railties", ">= 7"
 
   s.add_development_dependency "mocha", "~>2.2"
   s.add_development_dependency "sqlite3", "~> 1.7"

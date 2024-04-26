@@ -1,4 +1,9 @@
+## 3.4.1 (2024-04-25)
+
+  - Updated gemspec to require Rails 7.
+
 ## 3.4.0 (2024-04-24)
+
   - Dropped Ruby 2.0 support
   - Nexmo sender is now escaped (https://github.com/holli/action_smser/pull/13)
   - Fixed some deprecation warnings for Rails 7 (https://github.com/holli/action_smser/pull/15)

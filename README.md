@@ -230,8 +230,8 @@ end
 Submit suggestions or feature requests as a GitHub Issue or Pull Request. Remember to update tests. Tests are quite extensive.
 
 Check github actions for what environments are supported: https://github.com/holli/action_smser/blob/master/.github/workflows/ci.yaml and
-https://github.com/holli/action_smser/actions
-
+https://github.com/holli/action_smser/actions . See https://github.com/holli/action_smser/blob/master/CHANGELOG.md for changes and to see what
+version to use with older Rails versions.
 
 
 ### Similar gems
