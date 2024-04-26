@@ -1,3 +1,8 @@
+## 3.4.0 (2024-04-24)
+  - Dropped Ruby 2.0 support
+  - Nexmo sender is now escaped (https://github.com/holli/action_smser/pull/13)
+  - Fixed some deprecation warnings for Rails 7 (https://github.com/holli/action_smser/pull/15)
+
 ## 3.3.0 (2023-03-01)
   - Rails 7 support, droppert support for 6 etc although might work with them
   - Ruby 3.1 support
