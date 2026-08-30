@@ -21,10 +21,10 @@ Gem::Specification.new do |s|
   s.add_dependency "railties", ">= 7.1", "< 9"
 
   s.add_development_dependency "mocha", "~>2.2"
-  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "sqlite3", ">= 1.4"
   s.add_development_dependency "rails", ">= 7.1"
-  s.add_development_dependency "delayed_job"
-  s.add_development_dependency 'rails-controller-testing'
-  s.add_development_dependency "nokogiri"
+  s.add_development_dependency "delayed_job", ">= 4.1"
+  s.add_development_dependency 'rails-controller-testing', ">= 1.0"
+  s.add_development_dependency "nokogiri", ">= 1.10"
 
 end
