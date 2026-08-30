@@ -1,3 +1,8 @@
+## 4.0.0 (2026-08-30)
+
+  - Dropped support for Rails < 7.1 and Ruby < 3.1
+  - Added support for Rails 7.1, 7.2, 8.0, 8.1
+
 ## 3.4.1 (2024-04-25)
 
   - Updated gemspec to require Rails 7.

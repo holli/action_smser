@@ -11,15 +11,12 @@ Dummy::Application.configure do
   config.public_file_server.enabled = false
   config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
 
-  # Log error messages when you accidentally call methods on nil
-  config.whiny_nils = true
-
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
   # Raise exceptions instead of rendering exception templates
-  config.action_dispatch.show_exceptions = false
+  config.action_dispatch.show_exceptions = :none
 
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection    = false
