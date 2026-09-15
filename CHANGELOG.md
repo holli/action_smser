@@ -1,3 +1,7 @@
+## 4.0.1 (2026-09-16)
+
+  - Fixed Ruby 3.4 "literal string will be frozen in the future" warning in `ActionSmser::Base.message_real_cropped`
+
 ## 4.0.0 (2026-08-30)
 
   - Dropped support for Rails < 7.1 and Ruby < 3.1

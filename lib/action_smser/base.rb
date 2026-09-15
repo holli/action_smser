@@ -24,7 +24,7 @@ class ActionSmser::Base
     end
     # Make sure that double chars are taken account
     def message_real_cropped(message, max_length = 159)
-      result = ""
+      result = +""
       length = 0
       message.to_s.chars.each do |char|
         length += SMS_DOUBLE_CHARS.include?(char) ? 2 : 1
